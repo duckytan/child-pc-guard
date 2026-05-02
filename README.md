@@ -105,9 +105,17 @@ install.ps1                   ← 一键安装脚本（支持 -Silent 参数）
 
 ## 文档
 
-- [`ChildPCGuard_项目方案.md`](ChildPCGuard_项目方案.md) — 完整技术方案（唯一开发参考文档）
-- [`CODEBUDDY.md`](CODEBUDDY.md) — AI 开发指引
-- [`task_plan.md`](task_plan.md) — 开发进度追踪
+| 文档 | 说明 |
+|------|------|
+| [`ChildPCGuard_项目方案.md`](ChildPCGuard_项目方案.md) | 完整技术方案（唯一开发参考文档） |
+| [`docs/REQUIREMENTS.md`](docs/REQUIREMENTS.md) | 需求规格说明书（SRS） |
+| [`docs/TEST_PLAN.md`](docs/TEST_PLAN.md) | 测试计划（测试策略、环境、用例） |
+| [`docs/ACCEPTANCE_CRITERIA.md`](docs/ACCEPTANCE_CRITERIA.md) | 各 Phase 验收标准（DoD） |
+| [`docs/SECURITY.md`](docs/SECURITY.md) | 安全设计说明（威胁建模、加密方案） |
+| [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) | 贡献指南（代码规范、分支策略） |
+| [`CHANGELOG.md`](CHANGELOG.md) | 版本变更记录 |
+| [`task_plan.md`](task_plan.md) | 开发进度追踪 |
+| [`CODEBUDDY.md`](CODEBUDDY.md) | AI 开发指引 |
 
 ---
 
