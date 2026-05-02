@@ -85,9 +85,9 @@
 |------|------|------|
 | Q-01 | LockOverlay 优先用虚拟桌面方案还是全屏窗体方案？ | 已定：虚拟桌面优先，全屏窗体备选 |
 | Q-02 | AdminPanel 使用 WPF 还是 WinForms？ | 已定：WPF |
-| Q-03 | AgentA/AgentB 心跳用 Named Pipe 还是共享内存？ | 待讨论 |
-| Q-04 | 是否需要 Phase 6 的网站访问记录功能？ | 待用户决策 |
-| Q-05 | install.ps1 是否需要支持静默安装（无 UI 模式）？ | 待讨论 |
+| Q-03 | AgentA/AgentB 心跳用 Named Pipe 还是共享内存？ | 已定：Named Pipe（复用现有基础设施，Pipe 断开即感知对方死亡） |
+| Q-04 | 是否需要 Phase 6 的网站访问记录功能？ | 已定：暂缓，Phase 1-5 完成后再决定 |
+| Q-05 | install.ps1 是否需要支持静默安装（无 UI 模式）？ | 已定：支持，通过 `-Silent` 可选参数实现，不影响默认交互模式 |
 
 ---
 
@@ -100,8 +100,9 @@
 - **配置加密**：AES-256-CBC，密钥存注册表（SYSTEM 保护）
 - **IPC**：Named Pipe（JSON 消息协议）
 - **日志**：Serilog + 滚动文件
-- **安装方式**：PowerShell 脚本（无需额外依赖）
-- **关机双保险**：GuardService 定时器 + Windows 任务计划程序
+- **AgentA/AgentB 心跳**：Named Pipe（复用现有基础设施，Pipe 断开天然感知对方死亡）
+- **网站访问记录**：暂缓，Phase 1-5 完成后再决定
+- **install.ps1 静默模式**：支持 `-Silent` 可选参数，不影响默认交互模式
 
 ---
 
