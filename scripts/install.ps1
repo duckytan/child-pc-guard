@@ -100,12 +100,15 @@ foreach ($dir in $publishDirs) {
     }
 }
 
-# ── Step 4: 设置目录 ACL（拒绝标准用户写入）────────────────────────────────
-Write-Step "配置文件系统 ACL"
+# ── Step 4: 设置目录 ACL（Phase 2 增强）────────────────────────────────────
+Write-Step "配置文件系统 ACL（Phase 2 防护）"
 
 foreach ($dir in @($InstallDir, $DataDir)) {
     $acl = Get-Acl $dir
     $acl.SetAccessRuleProtection($true, $false)  # 禁用继承
+
+    # 移除所有现有规则
+    $acl.Access | ForEach-Object { $acl.RemoveAccessRule($_) }
 
     # 允许 SYSTEM 完全控制
     $acl.AddAccessRule([System.Security.AccessControl.FileSystemAccessRule]::new(
@@ -115,10 +118,10 @@ foreach ($dir in @($InstallDir, $DataDir)) {
     $acl.AddAccessRule([System.Security.AccessControl.FileSystemAccessRule]::new(
         "BUILTIN\Administrators", "FullControl", "ContainerInherit,ObjectInherit", "None", "Allow"))
 
-    # 拒绝 Users 写入（可读，但不可修改）
+    # 允许 Users 只读（ReadAndExecute + ReadAttributes）
     $acl.AddAccessRule([System.Security.AccessControl.FileSystemAccessRule]::new(
-        "BUILTIN\Users", "Write,Delete,TakeOwnership,ChangePermissions",
-        "ContainerInherit,ObjectInherit", "None", "Deny"))
+        "BUILTIN\Users", "ReadAndExecute,ReadAttributes,ReadPermissions",
+        "ContainerInherit,ObjectInherit", "None", "Allow"))
 
     Set-Acl -Path $dir -AclObject $acl
     Write-OK "ACL 已设置: $dir"
@@ -152,16 +155,43 @@ if (Test-Path $guardExe) {
     & sc.exe failure $ServiceName reset= 86400 actions= restart/1000/restart/1000/restart/1000 | Out-Null
     Write-OK "故障恢复已配置（1 秒内重启，最多 3 次）"
 
-    # Step 7: 配置服务 DACL（防止普通用户 sc stop）
-    Write-Step "配置服务 DACL"
-    $sddl = "D:(A;;CCLCSWRPWPDTLOCRSDRCWDWO;;;SY)(A;;CCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(D;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;IU)"
+    # Step 7: 配置服务 DACL（Phase 2: 防止普通用户 sc stop）
+    Write-Step "配置服务 DACL（Phase 2 防护）"
+    # SY = SYSTEM, BA = BUILTIN\Administrators, IU = INTERACTIVE Users
+    # 使用 ProcessSecurity.GenerateServiceSddl() 生成的标准 SDDL
+    $sddl = "D:(A;;CCLCSWLOCRRC;;;SY)(A;;CCLCSWLOCRRC;;;BA)"
     & sc.exe sdset $ServiceName $sddl | Out-Null
-    Write-OK "服务 DACL 已设置（普通用户无法停止/删除服务）"
+    Write-OK "服务 DACL 已设置（仅 SYSTEM/Admins 可修改）"
+
+    # Step 8: 配置服务注册表键 DACL（Phase 2: 防止注册表修改）
+    Write-Step "配置注册表服务键 DACL（Phase 2 防护）"
+    $regKeyPath = "HKLM:\SYSTEM\CurrentControlSet\Services\$ServiceName"
+    if (Test-Path $regKeyPath) {
+        $regAcl = Get-Acl $regKeyPath
+        $regAcl.SetAccessRuleProtection($true, $false)
+
+        # 移除所有现有规则
+        $regAcl.Access | ForEach-Object { $regAcl.RemoveAccessRule($_) }
+
+        # SYSTEM - FullControl
+        $regAcl.AddAccessRule([System.Security.AccessControl.RegistryAccessRule]::new(
+            "NT AUTHORITY\SYSTEM", "FullControl", "ContainerInherit,ObjectInherit", "None", "Allow"))
+
+        # Administrators - ReadKey（仅读取，不能修改服务配置）
+        $regAcl.AddAccessRule([System.Security.AccessControl.RegistryAccessRule]::new(
+            "BUILTIN\Administrators", "ReadKey,EnumerateSubKeys,QueryValues",
+            "ContainerInherit,ObjectInherit", "None", "Allow"))
+
+        Set-Acl -Path $regKeyPath -AclObject $regAcl
+        Write-OK "注册表服务键 DACL 已设置（Admins 只读）"
+    } else {
+        Write-Warn "注册表服务键不存在（服务未注册）"
+    }
 } else {
     Write-Warn "GuardService.exe 未找到（$guardExe），跳过服务注册（构建后重新运行安装脚本）"
 }
 
-# ── Step 8: 创建 Windows 任务计划（关机双重保障）────────────────────────────
+# ── Step 9: 创建 Windows 任务计划（关机双重保障）────────────────────────────
 Write-Step "创建自动关机任务计划"
 
 # 删除已有任务
@@ -182,7 +212,7 @@ Register-ScheduledTask `
 
 Write-OK "计划任务已创建: $TaskName（每日 $ShutdownTime 关机）"
 
-# ── Step 9: 生成初始配置文件（占位，实际配置由服务首次启动时生成）──────────
+# ── Step 10: 生成初始配置文件（占位，实际配置由服务首次启动时生成）──────────
 Write-Step "初始化配置"
 
 $initConfig = @"
@@ -197,7 +227,7 @@ $initConfigPath = "$DataDir\init.json"
 $initConfig | Set-Content -Path $initConfigPath -Encoding UTF8
 Write-OK "初始化参数已写入: $initConfigPath（首次启动时由服务处理后删除）"
 
-# ── Step 10: 启动服务 ────────────────────────────────────────────────────
+# ── Step 11: 启动服务 ────────────────────────────────────────────────────
 if (Test-Path $guardExe) {
     Write-Step "启动服务"
     Start-Service -Name $ServiceName -ErrorAction SilentlyContinue

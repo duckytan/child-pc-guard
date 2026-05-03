@@ -40,15 +40,15 @@
 - [ ] 本地构建验证（需 .NET 8 SDK 环境）
 - [ ] 部署测试（实际机器上运行验证）
 
-### Phase 2：防护加固（约 1 周）
-> 等待 Phase 1 完成后启动
-- [ ] 服务 DACL 配置（`sc.exe sdset`）
-- [ ] 服务注册表键 DACL 保护
-- [ ] 安装目录 + 配置文件 ACL 保护
-- [ ] 进程句柄 DACL（防任务管理器 Kill）
-- [ ] NTP 时间校验（防修改系统时间）
-- [ ] 安全模式检测（检测到即关机）
-- [ ] 配置文件 AES-256 加密
+### Phase 2：防护加固（约 1 周）✅ 已完成
+> 完成时间：2026-05-03
+- [x] 服务 DACL 配置（`sc.exe sdset`，仅 SYSTEM/Admins 可修改）
+- [x] 服务注册表键 DACL 保护（Admins 只读，不能修改服务配置）
+- [x] 安装目录 + 配置文件 ACL 保护（Users 只读，不能写入/删除）
+- [x] 进程句柄 DACL（防任务管理器 Kill，ProcessSecurity.cs）
+- [x] NTP 时间校验（防修改系统时间，已在 Phase 1 集成到 GuardWorker）
+- [x] 安全模式检测（检测到即关机，已在 Phase 1 集成到 GuardWorker）
+- [x] 配置文件 AES-256 加密（ConfigManager.cs 已实现，密钥派生自机器 GUID）
 
 ### Phase 3：自定义锁屏（约 1 周）
 - [ ] LockOverlay 基础框架（WPF 全屏窗口）
@@ -115,4 +115,4 @@ _暂无_
 ---
 
 ## Status
-**当前处于：Phase 1 开发阶段** — 已于 2026-05-03 收到"开始开发"指令，进入 Phase 1 MVP 开发
+**当前处于：Phase 3 开发阶段** — Phase 1/2 已完成，进入 Phase 3 自定义锁屏开发

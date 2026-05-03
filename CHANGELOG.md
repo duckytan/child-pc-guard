@@ -4,7 +4,41 @@
 
 ---
 
-## [Unreleased] — Phase 1 开发中
+## [Unreleased] — Phase 3 开发中
+
+## [0.2.0] - 2026-05-03 — Phase 2：防护加固
+
+### Added
+- **进程保护**
+  - `Shared/Protection/ProcessSecurity.cs`：进程 DACL 保护，防止任务管理器 Kill
+  - `GuardService/Program.cs`：服务启动时自动应用进程 DACL 保护
+- **注册表保护**
+  - `Shared/Protection/RegistrySecurity.cs`：服务注册表键 DACL 保护
+  - `install.ps1`：安装时自动设置注册表键 DACL（Admins 只读）
+- **文件 ACL 保护**
+  - `Shared/Protection/FileSecurity.cs`：文件和目录 ACL 管理
+  - `install.ps1`：增强目录 ACL 配置（Users 只读，不可写入/删除）
+- **NTP 时间校验**
+  - `Shared/Protection/NtpTimeValidator.cs`：多服务器 NTP 校验，5 分钟缓存
+  - `GuardWorker.cs`：集成到主循环（每 5 分钟校验一次）
+- **安全模式检测**
+  - `Shared/Protection/SafeModeDetector.cs`：检测安全模式启动
+  - `GuardWorker.cs`：服务启动时检查，安全模式则立即关机
+- **安装脚本增强**
+  - `install.ps1`：添加注册表 DACL 保护步骤（Phase 2）
+  - 优化目录 ACL 配置，移除拒绝规则，改用显式允许
+- **单元测试**
+  - `ProcessSecurityTests.cs`：5 个测试用例（服务 SDDL 生成、进程 DACL 保护验证）
+  - `FileSecurityTests.cs`：8 个测试用例（文件/目录 ACL 保护）
+  - `RegistrySecurityTests.cs`：5 个测试用例（注册表 DACL 保护）
+
+### Changed
+- `GuardService/Program.cs`：添加 `InitializeSecurity()` 方法
+- `GuardWorker.cs`：已包含 NTP 校验和安全模式检测（Phase 1 基础，Phase 2 完整集成）
+
+---
+
+## [0.1.0] - 2026-05-03 — Phase 1：MVP
 
 ### Added
 - 解决方案结构：`ChildPCGuard.sln` + 6 个子项目（Shared/GuardService/LockOverlay/AdminPanel/AgentA/AgentB）+ 单元测试项目
