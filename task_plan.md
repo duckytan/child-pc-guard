@@ -60,11 +60,12 @@
 - [ ] 紧急解锁快捷键（Ctrl+Alt+Shift+F12 × 5）- 可选功能
 - [ ] 多屏幕支持（当前仅单屏）
 
-### Phase 4：双进程互保（约 3-5 天）
-- [ ] AgentA / AgentB 基础框架
-- [ ] 心跳机制（Named Pipe 或共享内存）
-- [ ] 互相监控 + 复活逻辑
-- [ ] 进程名伪装
+### Phase 4：双进程互保（约 3-5 天）✅ 已完成
+> 完成时间：2026-05-03
+- [x] AgentA / AgentB 基础框架（AgentAWorker.cs / AgentBWorker.cs）
+- [x] 心跳机制（共享内存 MemoryMappedFile，HeartbeatProtocol.cs）
+- [x] 互相监控 + 复活逻辑（10 秒检查，30 秒超时，ProcessManager.cs）
+- [x] 进程名伪装（编译为 WinSecHelperA.exe / WinSecHelperB.exe，Assembly 信息伪装）
 
 ### Phase 5：管理员界面（约 1 周）
 - [ ] AdminPanel 基础框架（WPF）
@@ -116,4 +117,4 @@ _暂无_
 ---
 
 ## Status
-**当前处于：Phase 4 开发阶段** — Phase 1/2/3 已完成，进入 Phase 4 双进程互保开发
+**当前处于：Phase 5 开发阶段** — Phase 1/2/3/4 已完成，进入 Phase 5 管理员界面开发

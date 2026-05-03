@@ -4,7 +4,37 @@
 
 ---
 
-## [Unreleased] — Phase 4 开发中
+## [Unreleased] — Phase 5 开发中
+
+## [0.4.0] - 2026-05-03 — Phase 4：双进程互保
+
+### Added
+- **心跳协议**
+  - `Shared/Agent/HeartbeatProtocol.cs`：共享内存心跳通信（64 字节固定结构）
+  - 10 秒心跳间隔，30 秒超时阈值（3 次心跳未收到判定死亡）
+  - `CreateAgentA()` / `CreateAgentB()` 工厂方法
+- **进程管理器**
+  - `Shared/Agent/ProcessManager.cs`：进程启动/终止/状态查询
+  - 支持重试机制（默认 3 次）
+- **AgentA 进程**
+  - `AgentA/AgentAWorker.cs`：监控 AgentB 存活，超时自动重启
+  - `AgentA/Program.cs`：Serilog 日志配置
+  - 伪装进程名：`WinSecHelperA.exe`（Assembly 信息伪装为 Microsoft Windows Security）
+- **AgentB 进程**
+  - `AgentB/AgentBWorker.cs`：监控 AgentA 存活，超时自动重启
+  - `AgentB/Program.cs`：Serilog 日志配置
+  - 伪装进程名：`WinSecHelperB.exe`
+- **GuardService 集成**
+  - `GuardService/Program.cs`：服务启动时自动启动 AgentA/AgentB
+  - 启动路径：`../Agents/WinSecHelperA.exe` 和 `WinSecHelperB.exe`
+- **单元测试**
+  - `HeartbeatProtocolTests.cs`：5 个测试用例（发送心跳、检测存活、互检测、超时、释放资源）
+  - `ProcessManagerTests.cs`：6 个测试用例（进程查询、启动、终止、PID 获取）
+
+### Changed
+- `GuardService/Program.cs`：添加 `StartAgents()` 方法，导入 `ChildPCGuard.Shared.Agent` 命名空间
+
+---
 
 ## [0.3.0] - 2026-05-03 — Phase 3：自定义锁屏
 
