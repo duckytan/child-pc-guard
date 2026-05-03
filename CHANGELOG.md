@@ -4,7 +4,39 @@
 
 ---
 
-## [Unreleased] — Phase 3 开发中
+## [Unreleased] — Phase 4 开发中
+
+## [0.3.0] - 2026-05-03 — Phase 3：自定义锁屏
+
+### Added
+- **虚拟桌面隔离**
+  - `LockOverlay/VirtualDesktopManager.cs`：创建独立锁屏桌面，完全隔离用户桌面
+  - 集成到 LockWindow 启动流程
+- **全局键盘钩子**
+  - `LockOverlay/KeyboardHook.cs`：拦截 Alt+Tab、Win 键、Alt+F4 等系统快捷键
+  - 防止绕过锁屏窗口
+- **密码验证**
+  - `LockOverlay/PasswordValidator.cs`：BCrypt 哈希验证 + 错误次数限制
+  - 连续错误 3 次锁定 5 分钟，显示倒计时
+- **锁屏界面**
+  - `LockOverlay/LockWindow.xaml`：WPF 全屏窗口，模糊背景，时间显示
+  - `LockOverlay/LockWindow.xaml.cs`：密码输入、状态提示、IPC 通信
+  - 显示锁屏原因（时长超限/时段外/时间篡改/手动锁屏）
+- **程序入口**
+  - `LockOverlay/Program.cs`：支持 `--reason` 参数，加载配置
+- **GuardService 集成**
+  - `GuardWorker.cs`：启动 LockOverlay 时传递锁屏原因参数
+- **单元测试**
+  - `PasswordValidatorTests.cs`：7 个测试用例（验证成功/失败/锁定/冷却）
+- **NuGet 依赖**
+  - `LockOverlay`：添加 BCrypt.Net-Next 4.0.3
+
+### Changed
+- `Shared/Win32/NativeMethods.cs`：新增 GetThreadDesktop、GetCurrentThreadId、GetKeyState API
+
+---
+
+
 
 ## [0.2.0] - 2026-05-03 — Phase 2：防护加固
 

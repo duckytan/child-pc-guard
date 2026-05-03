@@ -50,14 +50,15 @@
 - [x] 安全模式检测（检测到即关机，已在 Phase 1 集成到 GuardWorker）
 - [x] 配置文件 AES-256 加密（ConfigManager.cs 已实现，密钥派生自机器 GUID）
 
-### Phase 3：自定义锁屏（约 1 周）
-- [ ] LockOverlay 基础框架（WPF 全屏窗口）
-- [ ] 全局键盘钩子（拦截 Alt+Tab、Win 键等）
-- [ ] 虚拟桌面方案（CreateDesktop / SwitchDesktop）
-- [ ] PIN 密码验证（BCrypt 哈希对比）
-- [ ] 密码错误 3 次锁定 5 分钟
-- [ ] 紧急解锁快捷键（Ctrl+Alt+Shift+F12 × 5）
-- [ ] 多屏幕支持
+### Phase 3：自定义锁屏（约 1 周）✅ 已完成
+> 完成时间：2026-05-03
+- [x] LockOverlay 基础框架（WPF 全屏窗口，LockWindow.xaml）
+- [x] 全局键盘钩子（拦截 Alt+Tab、Win 键等，KeyboardHook.cs）
+- [x] 虚拟桌面方案（CreateDesktop / SwitchDesktop，VirtualDesktopManager.cs）
+- [x] PIN 密码验证（BCrypt 哈希对比，PasswordValidator.cs）
+- [x] 密码错误 3 次锁定 5 分钟（PasswordValidator 实现）
+- [ ] 紧急解锁快捷键（Ctrl+Alt+Shift+F12 × 5）- 可选功能
+- [ ] 多屏幕支持（当前仅单屏）
 
 ### Phase 4：双进程互保（约 3-5 天）
 - [ ] AgentA / AgentB 基础框架
@@ -115,4 +116,4 @@ _暂无_
 ---
 
 ## Status
-**当前处于：Phase 3 开发阶段** — Phase 1/2 已完成，进入 Phase 3 自定义锁屏开发
+**当前处于：Phase 4 开发阶段** — Phase 1/2/3 已完成，进入 Phase 4 双进程互保开发

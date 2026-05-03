@@ -194,14 +194,18 @@ public class GuardWorker : BackgroundService
                 return;
             }
 
+            // Phase 3: 传递锁屏原因参数
+            var reasonArg = _state.LockReason ?? "ManualLock";
             _lockOverlayProcess = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
             {
                 FileName = lockOverlayPath,
+                Arguments = $"--reason {reasonArg}",
                 UseShellExecute = false,
                 CreateNoWindow = false
             });
 
-            _logger.LogInformation("LockOverlay 已启动，PID: {Pid}", _lockOverlayProcess?.Id);
+            _logger.LogInformation("LockOverlay 已启动（原因: {Reason}），PID: {Pid}",
+                reasonArg, _lockOverlayProcess?.Id);
         }
         catch (Exception ex)
         {
