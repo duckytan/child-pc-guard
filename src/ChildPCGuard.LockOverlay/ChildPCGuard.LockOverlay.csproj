@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <AssemblyName>LockOverlay</AssemblyName>
+    <RootNamespace>ChildPCGuard.LockOverlay</RootNamespace>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Platforms>x64</Platforms>
+    <UseWPF>true</UseWPF>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <OutputType>WinExe</OutputType>
+    <!-- 进程伪装 -->
+    <AssemblyTitle>Windows Shell Experience Host</AssemblyTitle>
+    <AssemblyDescription>Windows Shell Experience Host</AssemblyDescription>
+    <Company>Microsoft Corporation</Company>
+    <Product>Windows Shell</Product>
+    <Copyright>© Microsoft Corporation</Copyright>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ChildPCGuard.Shared\ChildPCGuard.Shared.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -4,19 +4,38 @@
 
 ---
 
-## [Unreleased]
+## [Unreleased] — Phase 1 开发中
 
-### 待开发（Phase 1）
-- GuardService 核心框架（.NET 8 Worker Service）
-- TimeTracker 时长计时模块
-- RuleEngine 规则引擎
-- 超时触发锁屏（Phase 1 使用系统原生锁屏）
-- 自动关机双重保障机制
-- state.json 持久化与重启恢复
-- 10/5/1 分钟 Toast 预警通知
-- install.ps1 安装脚本（基础版）
+### Added
+- 解决方案结构：`ChildPCGuard.sln` + 6 个子项目（Shared/GuardService/LockOverlay/AdminPanel/AgentA/AgentB）+ 单元测试项目
+- `ChildPCGuard.Shared`：共享类库
+  - `Config/AppConfig.cs`：完整配置数据模型（含 TimeRules、DayRule、TimeWindow）
+  - `Config/ConfigManager.cs`：AES-256-GCM 加密配置文件管理器，密钥通过 PBKDF2 从 MachineGuid 派生
+  - `State/DailyState.cs`：今日状态数据模型（跨天重置、额外时间、连续使用计时）
+  - `State/StateManager.cs`：state.json 读写（带写锁、原子替换）
+  - `IPC/IpcMessage.cs`：Named Pipe JSON 消息协议（9 种指令类型）
+  - `IPC/PipeServer.cs`：Named Pipe 服务端（DACL 限制只允许 SYSTEM/Admins）
+  - `IPC/PipeClient.cs`：Named Pipe 客户端
+  - `Win32/NativeMethods.cs`：Win32 API P/Invoke 声明（GetLastInputInfo、CreateDesktop、SetWindowsHookEx 等）
+  - `Protection/NtpTimeValidator.cs`：NTP 时间校验（多服务器、5 分钟缓存）
+  - `Protection/SafeModeDetector.cs`：安全模式检测（检测到则立即关机）
+- `ChildPCGuard.GuardService`：核心守护服务
+  - `Core/TimeTracker.cs`：基于 GetLastInputInfo 的精准计时（空闲不计时、跨天重置）
+  - `Core/RuleEngine.cs`：规则引擎（时长/时段/NTP/连续使用判断）
+  - `Core/ShutdownScheduler.cs`：关机调度器（内部定时器 + 60 秒预警）
+  - `Core/NotificationHelper.cs`：Windows 10/11 原生 Toast 通知
+  - `GuardWorker.cs`：主 Worker（5 秒主循环、IPC 处理、锁屏管理）
+  - `Program.cs`：服务入口（支持 `--console` 调试模式）
+- `scripts/install.ps1`：安装脚本（目录创建、ACL/DACL 配置、服务注册、故障恢复、计划任务）
+- `scripts/uninstall.ps1`：卸载脚本（服务删除、计划任务删除、文件清理）
+- `tests/ChildPCGuard.Tests.Unit`：单元测试项目
+  - `RuleEngineTests.cs`：12 个测试用例（时长/时段/NTP/连续使用/预警判断）
+  - `DailyStateTests.cs`：5 个测试用例（跨天重置、有效上限计算）
+  - `TimeWindowTests.cs`：8 个测试用例（时间窗口含义，含跨午夜场景）
 
 ---
+
+
 
 ## [0.1.0] - 待发布（Phase 1 完成后）
 

@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <!-- 进程名伪装：编译输出为 WinSecHelperA.exe -->
+    <AssemblyName>WinSecHelperA</AssemblyName>
+    <RootNamespace>ChildPCGuard.AgentA</RootNamespace>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Platforms>x64</Platforms>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <OutputType>Exe</OutputType>
+    <AssemblyTitle>Windows Security Helper</AssemblyTitle>
+    <AssemblyDescription>Windows Security Helper Service Component A</AssemblyDescription>
+    <Company>Microsoft Corporation</Company>
+    <Product>Windows Security</Product>
+    <Copyright>© Microsoft Corporation</Copyright>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ChildPCGuard.Shared\ChildPCGuard.Shared.csproj" />
+  </ItemGroup>
+
+</Project>

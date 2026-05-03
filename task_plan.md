@@ -11,7 +11,7 @@
 
 ## 阶段规划
 
-### 讨论/方案阶段（当前阶段）
+### 讨论/方案阶段（✅ 已完成）
 - [x] 调研现有方案，输出调研报告
 - [x] 对比方案，提出融合建议
 - [x] 补充深度调研技术细节
@@ -21,22 +21,24 @@
 - [x] 创建 `CODEBUDDY.md`（含铁律和架构说明）
 - [x] 创建 CodeBuddy Rules（`.codebuddy/rules/`）
 - [x] 初始化 Git 仓库并推送到 GitHub
-- [ ] 方案评审与完善（进行中）
-- [ ] 用户确认方案，说出"开始开发"
+- [x] 补充完整工程文档体系（SRS、测试计划、验收标准、安全说明、贡献指南）
+- [x] 用户确认方案，说出"开始开发"（2026-05-03）
 
-### Phase 1：MVP（约 2 周）
-> 等待"开始开发"指令后启动
-- [ ] 创建 .NET 8 解决方案结构（`ChildPCGuard.sln`）
-- [ ] 实现 GuardService 基础框架（.NET Worker Service）
-- [ ] 实现 TimeTracker（GetLastInputInfo 计时）
-- [ ] 实现 RuleEngine（时长/时段判断）
-- [ ] 每日 22:00 自动关机（双重机制）
-- [ ] 超时触发系统原生锁屏（`LockWorkStation()`）
-- [ ] state.json 持久化与重启恢复
-- [ ] 服务注册与开机自启
-- [ ] 服务 SCM 故障恢复配置
-- [ ] 安装 PowerShell 脚本（基础版）
-- [ ] 10/5/1 分钟 Toast 预警通知
+### Phase 1：MVP（约 2 周）⬅ 当前阶段
+> 开发启动时间：2026-05-03
+- [x] 创建 .NET 8 解决方案结构（`ChildPCGuard.sln`）
+- [x] 实现 GuardService 基础框架（.NET Worker Service）
+- [x] 实现 TimeTracker（GetLastInputInfo 计时）
+- [x] 实现 RuleEngine（时长/时段判断）
+- [x] 每日 22:00 自动关机（双重机制：内部 + 计划任务）
+- [x] 超时触发系统原生锁屏（`LockWorkStation()`，LockOverlay 未就绪时的 Phase 1 临时方案）
+- [x] state.json 持久化与重启恢复（StateManager）
+- [x] 服务注册与开机自启（install.ps1）
+- [x] 服务 SCM 故障恢复配置（install.ps1 中 sc failure 命令）
+- [x] 安装 PowerShell 脚本（基础版，含 ACL/DACL/计划任务）
+- [x] 10/5/1 分钟 Toast 预警通知（NotificationHelper）
+- [ ] 本地构建验证（需 .NET 8 SDK 环境）
+- [ ] 部署测试（实际机器上运行验证）
 
 ### Phase 2：防护加固（约 1 周）
 > 等待 Phase 1 完成后启动
@@ -113,4 +115,4 @@ _暂无_
 ---
 
 ## Status
-**当前处于：讨论/方案阶段** — 方案已基本成型，等待用户确认并说出"开始开发"后进入 Phase 1
+**当前处于：Phase 1 开发阶段** — 已于 2026-05-03 收到"开始开发"指令，进入 Phase 1 MVP 开发
