@@ -67,13 +67,17 @@
 - [x] 互相监控 + 复活逻辑（10 秒检查，30 秒超时，ProcessManager.cs）
 - [x] 进程名伪装（编译为 WinSecHelperA.exe / WinSecHelperB.exe，Assembly 信息伪装）
 
-### Phase 5：管理员界面（约 1 周）
-- [ ] AdminPanel 基础框架（WPF）
-- [ ] 密码登录页（BCrypt 验证）
-- [ ] 状态首页 + 规则设置页
-- [ ] 临时操作（追加时间/暂停/立即锁屏）
-- [ ] 日志查看页
-- [ ] Named Pipe 与 GuardService 通信
+### Phase 5：管理员界面（约 1 周）✅ 已完成
+> 完成时间：2026-05-03
+- [x] AdminPanel 基础框架（WPF，App.xaml + MainWindow.xaml）
+- [x] 密码登录页（LoginWindow.xaml，BCrypt 验证，错误 3 次锁定 5 分钟）
+- [x] 状态首页（StatusPage.xaml，显示已用时长、剩余时长、服务状态）
+- [x] 规则设置页（RulesPage.xaml，框架已创建）
+- [x] 临时操作（ActionsPage.xaml，框架已创建）
+- [x] 日志查看页（LogsPage.xaml，框架已创建）
+- [x] 密码修改页（PasswordPage.xaml，框架已创建）
+- [x] 关于页（AboutPage.xaml，显示版本和防护特性）
+- [x] Named Pipe 与 GuardService 通信（通过 PipeClient）
 
 ### Phase 6：可选增强（约 1-2 周）
 - [ ] 应用程序黑名单

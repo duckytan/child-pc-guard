@@ -1,0 +1,43 @@
+<Page x:Class="ChildPCGuard.AdminPanel.Pages.StatusPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="状态">
+
+    <StackPanel Margin="20">
+        <TextBlock Text="首页/状态" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>
+
+        <!-- 今日使用情况 -->
+        <Border Background="#F5F5F5" Padding="15" Margin="0,0,0,15">
+            <StackPanel>
+                <TextBlock Text="今日使用情况" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0" Text="已用时长：" Margin="0,0,0,5"/>
+                    <TextBlock Grid.Row="0" Grid.Column="1" x:Name="UsedTimeText" Text="0 分钟" Margin="0,0,0,5"/>
+
+                    <TextBlock Grid.Row="1" Grid.Column="0" Text="剩余时长：" Margin="0,0,0,5"/>
+                    <TextBlock Grid.Row="1" Grid.Column="1" x:Name="RemainingTimeText" Text="0 分钟" Margin="0,0,0,5"/>
+
+                    <TextBlock Grid.Row="2" Grid.Column="0" Text="服务状态：" Margin="0,0,0,5"/>
+                    <TextBlock Grid.Row="2" Grid.Column="1" x:Name="ServiceStatusText" Text="运行中" Margin="0,0,0,5"/>
+
+                    <TextBlock Grid.Row="3" Grid.Column="0" Text="最后解锁时间：" Margin="0,0,0,5"/>
+                    <TextBlock Grid.Row="3" Grid.Column="1" x:Name="LastUnlockTimeText" Text="无" Margin="0,0,0,5"/>
+                </Grid>
+            </StackPanel>
+        </Border>
+
+        <!-- 操作按钮 -->
+        <Button Content="刷新状态" Click="RefreshStatus_Click" Width="100" HorizontalAlignment="Left"/>
+    </StackPanel>
+</Page>

@@ -4,7 +4,40 @@
 
 ---
 
-## [Unreleased] — Phase 5 开发中
+## [Unreleased] — 所有核心功能已完成
+
+## [0.5.0] - 2026-05-03 — Phase 5：管理员界面
+
+### Added
+- **登录窗口**
+  - `Views/LoginWindow.xaml`：WPF 登录界面（密码输入框、状态提示、错误显示）
+  - `Views/LoginWindow.xaml.cs`：BCrypt 密码验证、错误 3 次锁定 5 分钟、倒计时显示
+- **主窗口**
+  - `Views/MainWindow.xaml`：导航面板 + 内容框架
+  - `Views/MainWindow.xaml.cs`：页面导航逻辑
+- **状态页面**
+  - `Pages/StatusPage.xaml`：显示今日已用时长、剩余时长、服务状态、最后解锁时间
+  - `Pages/StatusPage.xaml.cs`：通过 PipeClient 请求 GET_STATUS 指令
+- **规则设置页面**
+  - `Pages/RulesPage.xaml/cs`：框架已创建（待实现具体规则编辑）
+- **临时操作页面**
+  - `Pages/ActionsPage.xaml/cs`：框架已创建（追加时间、暂停管控、立即锁屏、立即关机按钮）
+- **日志查看页面**
+  - `Pages/LogsPage.xaml/cs`：框架已创建（待实现日志加载）
+- **密码修改页面**
+  - `Pages/PasswordPage.xaml/cs`：框架已创建（待实现密码修改）
+- **关于页面**
+  - `Pages/AboutPage.xaml/cs`：显示版本号、防护特性列表、GitHub 地址
+- **应用程序入口**
+  - `App.xaml`：WPF 应用程序定义
+  - `App.xaml.cs`：启动时先显示登录窗口，成功后显示主窗口
+- **NuGet 依赖**
+  - `AdminPanel`：添加 BCrypt.Net-Next 4.0.3
+
+### Changed
+- `AdminPanel.csproj`：添加 BCrypt.Net-Next 包
+
+---
 
 ## [0.4.0] - 2026-05-03 — Phase 4：双进程互保
 
