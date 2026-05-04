@@ -7,12 +7,9 @@ namespace ChildPCGuard.AdminPanel.Pages;
 
 public partial class StatusPage : Page
 {
-    private readonly PipeClient _pipeClient;
-
     public StatusPage()
     {
         InitializeComponent();
-        _pipeClient = new PipeClient();
         Loaded += StatusPage_Loaded;
     }
 
@@ -30,27 +27,43 @@ public partial class StatusPage : Page
     {
         try
         {
-            var response = await _pipeClient.SendCommandAsync(new IpcMessage
-            {
-                Command = "GET_STATUS"
-            });
+            var response = await PipeClient.SendAsync(
+                IpcMessage.Create(IpcCommand.GetStatus));
 
-            if (response?.Success == true && response?.Data != null)
+            if (response?.Command == IpcCommand.StatusResponse)
             {
-                var data = response.Data;
-                UsedTimeText.Text = $"{data.GetValue("usedMinutes")} 分钟";
-                RemainingTimeText.Text = $"{data.GetValue("remainingMinutes")} 分钟";
-                ServiceStatusText.Text = data.GetValue("serviceStatus") ?? "未知";
-                LastUnlockTimeText.Text = data.GetValue("lastUnlockTime") ?? "无";
+                var payload = response.GetPayload<IpcPayloads.StatusPayload>();
+                if (payload != null)
+                {
+                    UsedTimeText.Text = $"{(int)payload.UsedMinutesToday} 分钟";
+                    RemainingTimeText.Text = $"{(int)payload.RemainingMinutes} 分钟";
+                    ServiceStatusText.Text = payload.IsLocked ? "已锁定" : "运行中";
+                    LastUnlockTimeText.Text = payload.LockReason ?? "无";
+                }
             }
             else
             {
-                System.Windows.MessageBox.Show($"获取状态失败：{response?.Message}", "错误");
+                System.Windows.MessageBox.Show("获取状态失败", "错误");
             }
         }
         catch (Exception ex)
         {
             System.Windows.MessageBox.Show($"刷新状态异常：{ex.Message}", "错误");
         }
+    }
+}
+
+file static class IpcPayloads
+{
+    public class StatusPayload
+    {
+        public double UsedMinutesToday { get; set; }
+        public double RemainingMinutes { get; set; }
+        public double DailyLimitMinutes { get; set; }
+        public bool IsLocked { get; set; }
+        public bool IsPaused { get; set; }
+        public DateTime? PausedUntil { get; set; }
+        public TimeSpan ServiceUptime { get; set; }
+        public string? LockReason { get; set; }
     }
 }

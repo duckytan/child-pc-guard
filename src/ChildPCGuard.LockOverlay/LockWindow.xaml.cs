@@ -14,7 +14,7 @@ public partial class LockWindow : Window
     private readonly VirtualDesktopManager _desktopManager;
     private readonly KeyboardHook _keyboardHook;
     private readonly PasswordValidator _passwordValidator;
-    private readonly PipeClient _pipeClient;
+    // PipeClient 使用静态方法，不需要实例
     private readonly DispatcherTimer _clockTimer;
     private readonly string _lockReason;
 
@@ -27,7 +27,6 @@ public partial class LockWindow : Window
         _desktopManager = new VirtualDesktopManager();
         _keyboardHook = new KeyboardHook();
         _passwordValidator = new PasswordValidator(passwordHash);
-        _pipeClient = new PipeClient();
         _lockReason = lockReason;
 
         // 时钟定时器
@@ -130,7 +129,7 @@ public partial class LockWindow : Window
             if (result.IsValid)
             {
                 // 验证成功：发送解锁指令给 GuardService
-                var response = await _pipeClient.SendMessageAsync(
+                var response = await PipeClient.SendAsync(
                     IpcMessage.Create(IpcCommand.Unlock));
 
                 if (response?.Command == IpcCommand.Ack)

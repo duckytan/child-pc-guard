@@ -1,4 +1,5 @@
 using ChildPCGuard.Shared.Config;
+using System.Windows;
 
 namespace ChildPCGuard.LockOverlay;
 
