@@ -43,7 +43,7 @@ public sealed class AgentBWorker
         // 3. 确定 AgentA 路径
         var baseDir = AppContext.BaseDirectory;
         _agentAPath = Path.Combine(baseDir, AgentAName);
-        _logger.LogInformation("AgentA 路径: {Path}", _agentAPath);
+        _logger.Information("AgentA 路径: {Path}", _agentAPath);
 
         // 4. 启动心跳定时器（每 10 秒发送心跳）
         _heartbeatTimer = new Timer(
@@ -59,7 +59,7 @@ public sealed class AgentBWorker
             TimeSpan.Zero,
             HeartbeatProtocol.HeartbeatInterval);
 
-        _logger.LogInformation("AgentB 已启动，心跳间隔: {Interval}ms",
+        _logger.Information("AgentB 已启动，心跳间隔: {Interval}ms",
             HeartbeatProtocol.HeartbeatInterval.TotalMilliseconds);
 
         // 6. 主循环（保持进程运行）

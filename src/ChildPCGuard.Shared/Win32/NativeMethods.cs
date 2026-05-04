@@ -5,7 +5,7 @@ namespace ChildPCGuard.Shared.Win32;
 /// <summary>
 /// Win32 API P/Invoke 声明
 /// </summary>
-internal static class NativeMethods
+public static class NativeMethods
 {
     // ── user32.dll ──────────────────────────────────────────────────────────
 
