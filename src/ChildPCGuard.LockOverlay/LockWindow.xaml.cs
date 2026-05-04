@@ -1,5 +1,7 @@
 using ChildPCGuard.Shared.Config;
 using ChildPCGuard.Shared.IPC;
+using System.Windows;
+using System.Windows.Input;
 using System.Windows.Threading;
 
 namespace ChildPCGuard.LockOverlay;

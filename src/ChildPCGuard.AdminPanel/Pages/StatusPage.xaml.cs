@@ -1,5 +1,6 @@
 using System.Windows.Controls;
 using System.Windows.Navigation;
+using System.Windows;
 using ChildPCGuard.Shared.IPC;
 
 namespace ChildPCGuard.AdminPanel.Pages;

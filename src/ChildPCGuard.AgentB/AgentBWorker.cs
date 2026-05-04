@@ -1,6 +1,6 @@
 using ChildPCGuard.Shared.Agent;
 using ChildPCGuard.Shared.Protection;
-using Microsoft.Extensions.Logging;
+using Serilog;
 using System.Diagnostics;
 
 namespace ChildPCGuard.AgentB;
@@ -24,7 +24,7 @@ public sealed class AgentBWorker
 
     public AgentBWorker()
     {
-        _logger = Serilog.Log.ForContext<AgentBWorker>();
+        _logger = Log.ForContext<AgentBWorker>();
         _processManager = new ProcessManager(_logger);
     }
 

@@ -9,6 +9,8 @@ using Microsoft.Extensions.Hosting;
 using Serilog;
 using System.Diagnostics;
 
+namespace ChildPCGuard.GuardService;
+
 // 控制台调试模式（开发时使用）
 bool consoleMode = args.Contains("--console");
 
@@ -22,47 +24,48 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.Console(outputTemplate: "{Timestamp:HH:mm:ss} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
     .CreateLogger();
 
-try
+return await Task.Run(async () =>
 {
-    Log.Information("ChildPCGuard GuardService 正在启动...");
-
-    // Phase 2: 初始化安全措施
-    InitializeSecurity();
-
-    // Phase 4: 启动 AgentA/AgentB 互保进程
-    StartAgents();
-
-    var builder = Host.CreateApplicationBuilder(args);
-
-    builder.Services.AddSerilog();
-    builder.Services.AddSingleton<ConfigManager>();
-    builder.Services.AddSingleton<StateManager>();
-    builder.Services.AddSingleton<PipeServer>();
-    builder.Services.AddHostedService<GuardWorker>();
-
-    if (!consoleMode)
+    try
     {
-        builder.Services.AddWindowsService(options =>
+        Log.Information("ChildPCGuard GuardService 正在启动...");
+
+        // Phase 2: 初始化安全措施
+        InitializeSecurity();
+
+        // Phase 4: 启动 AgentA/AgentB 互保进程
+        StartAgents();
+
+        var builder = Host.CreateApplicationBuilder(args);
+
+        builder.Services.AddSerilog();
+        builder.Services.AddSingleton<ConfigManager>();
+        builder.Services.AddSingleton<StateManager>();
+        builder.Services.AddSingleton<PipeServer>();
+        builder.Services.AddHostedService<GuardWorker>();
+
+        if (!consoleMode)
         {
-            options.ServiceName = "WinSecSvc";
-        });
+            builder.Services.AddWindowsService(options =>
+            {
+                options.ServiceName = "WinSecSvc";
+            });
+        }
+
+        var host = builder.Build();
+        await host.RunAsync();
+        return 0;
     }
-
-    var host = builder.Build();
-    await host.RunAsync();
-}
-catch (Exception ex)
-{
-    Log.Fatal(ex, "GuardService 启动失败");
-    return 1;
-}
-finally
-{
-    Log.CloseAndFlush();
-}
-
-return 0;
-}
+    catch (Exception ex)
+    {
+        Log.Fatal(ex, "GuardService 启动失败");
+        return 1;
+    }
+    finally
+    {
+        Log.CloseAndFlush();
+    }
+});
 
 /// <summary>
 /// Phase 4: 启动 AgentA/AgentB 互保进程
