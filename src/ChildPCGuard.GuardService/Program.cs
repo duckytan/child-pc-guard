@@ -9,61 +9,66 @@ using Microsoft.Extensions.Hosting;
 using Serilog;
 using System.Diagnostics;
 
-// 控制台调试模式（开发时使用）
-bool consoleMode = args.Contains("--console");
+namespace ChildPCGuard.GuardService;
 
-Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Information()
-    .WriteTo.File(
-        @"C:\ProgramData\ChildPCGuard\logs\service-.log",
-        rollingInterval: RollingInterval.Day,
-        retainedFileCountLimit: 30,
-        outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
-    .WriteTo.Console(outputTemplate: "{Timestamp:HH:mm:ss} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
-    .CreateLogger();
-
-return await Task.Run(async () =>
+public static class Program
 {
-    try
+    public static async Task<int> Main(string[] args)
     {
-        Log.Information("ChildPCGuard GuardService 正在启动...");
+        // 控制台调试模式（开发时使用）
+        bool consoleMode = args.Contains("--console");
 
-        // Phase 2: 初始化安全措施
-        InitializeSecurity();
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Information()
+            .WriteTo.File(
+                @"C:\ProgramData\ChildPCGuard\logs\service-.log",
+                rollingInterval: RollingInterval.Day,
+                retainedFileCountLimit: 30,
+                outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
+            .WriteTo.Console(outputTemplate: "{Timestamp:HH:mm:ss} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
+            .CreateLogger();
 
-        // Phase 4: 启动 AgentA/AgentB 互保进程
-        StartAgents();
-
-        var builder = Host.CreateApplicationBuilder(args);
-
-        builder.Services.AddSerilog();
-        builder.Services.AddSingleton<ConfigManager>();
-        builder.Services.AddSingleton<StateManager>();
-        builder.Services.AddSingleton<PipeServer>();
-        builder.Services.AddHostedService<GuardWorker>();
-
-        if (!consoleMode)
+        try
         {
-            builder.Services.AddWindowsService(options =>
-            {
-                options.ServiceName = "WinSecSvc";
-            });
-        }
+            Log.Information("ChildPCGuard GuardService 正在启动...");
 
-        var host = builder.Build();
-        await host.RunAsync();
-        return 0;
+            // Phase 2: 初始化安全措施
+            InitializeSecurity();
+
+            // Phase 4: 启动 AgentA/AgentB 互保进程
+            StartAgents();
+
+            var builder = Host.CreateApplicationBuilder(args);
+
+            builder.Services.AddSerilog();
+            builder.Services.AddSingleton<ConfigManager>();
+            builder.Services.AddSingleton<StateManager>();
+            builder.Services.AddSingleton<PipeServer>();
+            builder.Services.AddHostedService<GuardWorker>();
+
+            if (!consoleMode)
+            {
+                builder.Services.AddWindowsService(options =>
+                {
+                    options.ServiceName = "WinSecSvc";
+                });
+            }
+
+            var host = builder.Build();
+            await host.RunAsync();
+            return 0;
+        }
+        catch (Exception ex)
+        {
+            Log.Fatal(ex, "GuardService 启动失败");
+            return 1;
+        }
+        finally
+        {
+            Log.CloseAndFlush();
+        }
     }
-    catch (Exception ex)
-    {
-        Log.Fatal(ex, "GuardService 启动失败");
-        return 1;
-    }
-    finally
-    {
-        Log.CloseAndFlush();
-    }
-});
+}
 
 /// <summary>
 /// Phase 4: 启动 AgentA/AgentB 互保进程

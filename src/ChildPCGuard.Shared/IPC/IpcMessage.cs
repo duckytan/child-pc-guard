@@ -25,7 +25,7 @@ public enum IpcCommand
 public class IpcMessage
 {
     [JsonPropertyName("command")]
-    [JsonConverter(typeof(JsonStringEnumConverter))]
+    [JsonConverter(typeof(System.Text.Json.Serialization.JsonStringEnumConverter))]
     public IpcCommand Command { get; set; }
 
     /// <summary>JSON 序列化的 payload 字符串</summary>
