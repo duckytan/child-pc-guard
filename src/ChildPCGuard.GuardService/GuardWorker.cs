@@ -1,4 +1,5 @@
 using ChildPCGuard.GuardService.Core;
+using ChildPCGuard.Shared.Blocklist;
 using ChildPCGuard.Shared.Config;
 using ChildPCGuard.Shared.IPC;
 using ChildPCGuard.Shared.Protection;
@@ -31,6 +32,8 @@ public class GuardWorker : BackgroundService
     private ShutdownScheduler? _shutdownScheduler;
     private NotificationHelper? _notificationHelper;
     private NtpTimeValidator? _ntpValidator;
+    private AppBlocklist? _appBlocklist;
+    private ContinuousUsageMonitor? _continuousMonitor;
 
     private int _tickCount = 0;
     private bool _ntpTampered = false;
@@ -69,6 +72,25 @@ public class GuardWorker : BackgroundService
         _shutdownScheduler = new ShutdownScheduler(_logger.CreateLogger<ShutdownScheduler>());
         _notificationHelper = new NotificationHelper(_logger.CreateLogger<NotificationHelper>());
         _ntpValidator = new NtpTimeValidator(_config.NtpServers, _logger.CreateLogger<NtpTimeValidator>());
+
+        // Phase 6: 初始化黑名单和连续使用监控
+        _appBlocklist = new AppBlocklist(_logger.CreateLogger<AppBlocklist>());
+        _continuousMonitor = new ContinuousUsageMonitor(_logger.CreateLogger<ContinuousUsageMonitor>());
+
+        // 加载黑名单和连续使用配置
+        if (_config.BlockedApps?.Count > 0)
+        {
+            _appBlocklist.AddProcesses(_config.BlockedApps);
+            _logger.LogInformation("已加载 {Count} 个黑名单应用", _config.BlockedApps.Count);
+        }
+
+        if (_config.ContinuousLimitMinutes > 0 && _config.RestDurationMinutes > 0)
+        {
+            _continuousMonitor.UpdateConfig(_config.ContinuousLimitMinutes, _config.RestDurationMinutes);
+            _continuousMonitor.StartSession();
+            _logger.LogInformation("连续使用监控已启用: 限制={Limit}分钟, 休息={Rest}分钟",
+                _config.ContinuousLimitMinutes, _config.RestDurationMinutes);
+        }
 
         // 4. 启动 IPC 服务
         _pipeServer.MessageReceived += HandleIpcMessageAsync;
@@ -124,6 +146,29 @@ public class GuardWorker : BackgroundService
         _state.UsedMinutesToday = _timeTracker.UsedMinutesToday;
         _state.ContinuousMinutes = _timeTracker.ContinuousMinutes;
         if (active) _state.LastActiveTime = DateTime.Now;
+
+        // ── Phase 6: 黑名单扫描 ──
+        if (!_isLocked && _appBlocklist != null && _appBlocklist.BlockedProcessNames.Count > 0)
+        {
+            int killedCount = _appBlocklist.ScanAndKillBlockedProcesses();
+            if (killedCount > 0)
+            {
+                _logger.LogWarning("已终止 {Count} 个黑名单进程", killedCount);
+            }
+        }
+
+        // ── Phase 6: 连续使用监控 ──
+        if (_continuousMonitor != null && !_isLocked)
+        {
+            bool shouldRest = _continuousMonitor.ReportActivity();
+            if (shouldRest && _continuousMonitor.IsResting)
+            {
+                // 触发强制休息锁屏
+                _state.LockReason = "ContinuousLimitReached";
+                await TriggerLockAsync("ContinuousLimitReached");
+                return;
+            }
+        }
 
         // ── 3. 规则判断 ──
         if (!_isLocked)

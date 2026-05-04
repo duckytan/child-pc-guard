@@ -6,6 +6,36 @@
 
 ## [Unreleased] — 所有核心功能已完成
 
+## [0.6.0] - 2026-05-03 — Phase 6：可选增强（部分完成）
+
+### Added
+- **应用程序黑名单**
+  - `Blocklist/AppBlocklist.cs`：黑名单管理器（进程监控 + 终止）
+  - 支持 Add/Remove/Clear 操作，批量添加
+  - `ScanAndKillBlockedProcesses()`：扫描并终止黑名单进程
+  - GuardWorker 每 5 秒扫描一次黑名单进程
+- **连续使用时长限制**
+  - `Blocklist/ContinuousUsageMonitor.cs`：连续使用监控器
+  - 支持配置连续使用时长限制和强制休息时长
+  - `ReportActivity()`：每秒报告活动，检测是否超限
+  - 触发休息时设置锁屏原因为 `ContinuousLimitReached`
+- **GuardWorker 集成**
+  - 启动时加载黑名单和连续使用配置
+  - 主循环中每 5 秒扫描黑名单进程并终止
+  - 主循环中每 5 秒检查连续使用时长，超限则触发锁屏
+- **单元测试**
+  - `AppBlocklistTests.cs`：7 个测试用例（添加/移除/查询/清空/批量）
+  - `ContinuousUsageMonitorTests.cs`：7 个测试用例（配置/会话/重置/休息）
+
+### Changed
+- `GuardWorker.cs`：集成 AppBlocklist 和 ContinuousUsageMonitor
+- LockOverlay：已支持 `ContinuousLimitReached` 锁屏原因（Phase 3 已实现）
+
+### Notes
+- 虚拟机检测和使用统计图表功能暂缓，可根据需要后续添加
+
+---
+
 ## [0.5.0] - 2026-05-03 — Phase 5：管理员界面
 
 ### Added
