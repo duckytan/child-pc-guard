@@ -1,3 +1,5 @@
+using Serilog;
+
 namespace ChildPCGuard.Shared.Blocklist;
 
 /// <summary>

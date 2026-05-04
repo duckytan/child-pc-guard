@@ -1,3 +1,4 @@
+using Serilog;
 using System.Diagnostics;
 
 namespace ChildPCGuard.Shared.Agent;
