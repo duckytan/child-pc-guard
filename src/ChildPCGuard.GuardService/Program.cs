@@ -9,8 +9,6 @@ using Microsoft.Extensions.Hosting;
 using Serilog;
 using System.Diagnostics;
 
-namespace ChildPCGuard.GuardService;
-
 // 控制台调试模式（开发时使用）
 bool consoleMode = args.Contains("--console");
 

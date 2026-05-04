@@ -1,4 +1,5 @@
 using System.Security.Cryptography;
+using BCrypt.Net;
 
 namespace ChildPCGuard.AdminPanel.Services;
 
