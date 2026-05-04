@@ -68,6 +68,6 @@ public class ProcessSecurityTests
         var verified = ProcessSecurity.VerifyProcessDacl();
         // 在未保护的进程中，此测试可能返回 true（如果系统默认 DACL 已满足条件）
         // 这里主要测试方法不会抛出异常
-        Assert.NotNull(verified);
+        // verified 是 bool 类型，不需要 Assert.NotNull 检查
     }
 }
