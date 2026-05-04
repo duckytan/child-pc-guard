@@ -343,7 +343,7 @@ public class GuardWorker : BackgroundService
 
     private Task<IpcMessage?> HandleAddTimeCommand(IpcMessage message)
     {
-        var payload = message.GetPayload<IpcPayloads.AddTimePayload>();
+        var payload = message.GetPayload<AddTimePayload>();
         if (payload is null)
             return Task.FromResult<IpcMessage?>(IpcMessage.Create(IpcCommand.Error, new { message = "无效参数" }));
 
@@ -362,7 +362,7 @@ public class GuardWorker : BackgroundService
 
     private Task<IpcMessage?> HandlePauseCommand(IpcMessage message)
     {
-        var payload = message.GetPayload<IpcPayloads.PausePayload>();
+        var payload = message.GetPayload<PausePayload>();
         if (payload is null)
             return Task.FromResult<IpcMessage?>(IpcMessage.Create(IpcCommand.Error, new { message = "无效参数" }));
 
@@ -398,12 +398,12 @@ public class GuardWorker : BackgroundService
         return Task.FromResult<IpcMessage?>(IpcMessage.Create(IpcCommand.Ack));
     }
 
-    private IpcPayloads.StatusPayload BuildStatusPayload()
+    private StatusPayload BuildStatusPayload()
     {
         var rule = RuleEngine.GetTodayRule(_config);
         var remaining = RuleEngine.GetRemainingMinutes(_config, _state.UsedMinutesToday, _state.ExtraMinutesToday);
 
-        return new IpcPayloads.StatusPayload
+        return new StatusPayload
         {
             UsedMinutesToday = _state.UsedMinutesToday,
             RemainingMinutes = remaining,
@@ -430,24 +430,5 @@ public class GuardWorker : BackgroundService
     {
         if (_stateManager is not null)
             await _stateManager.SaveAsync(_state);
-    }
-}
-
-/// <summary>本地 payload 类型别名（避免命名空间冲突）</summary>
-file static class IpcPayloads
-{
-    public record AddTimePayload(int Minutes);
-    public record PausePayload(int DurationMinutes);
-
-    public class StatusPayload
-    {
-        public double UsedMinutesToday { get; set; }
-        public double RemainingMinutes { get; set; }
-        public double DailyLimitMinutes { get; set; }
-        public bool IsLocked { get; set; }
-        public bool IsPaused { get; set; }
-        public DateTime? PausedUntil { get; set; }
-        public TimeSpan ServiceUptime { get; set; }
-        public string? LockReason { get; set; }
     }
 }

@@ -33,7 +33,7 @@ public partial class StatusPage : Page
 
             if (response?.Command == IpcCommand.StatusResponse)
             {
-                var payload = response.GetPayload<ChildPCGuard.Shared.IPC.StatusPayload>();
+                var payload = response.GetPayload<StatusPayload>();
                 if (payload != null)
                 {
                     UsedTimeText.Text = $"{(int)payload.UsedMinutesToday} 分钟";
