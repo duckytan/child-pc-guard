@@ -2,6 +2,7 @@ using System.Runtime.InteropServices;
 using System.Security;
 using System.Security.AccessControl;
 using System.Security.Principal;
+using ChildPCGuard.Shared.Win32;
 using Microsoft.Win32.SafeHandles;
 
 namespace ChildPCGuard.Shared.Protection;

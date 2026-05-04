@@ -70,11 +70,11 @@ public sealed class HeartbeatProtocol
             _accessor.Write(0, timestamp);
             _accessor.Write(8, agentIdValue);
 
-            _logger.LogDebug("{AgentId} 心跳已发送", _agentId);
+            _logger.Debug("{AgentId} 心跳已发送", _agentId);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "{AgentId} 发送心跳失败", _agentId);
+            _logger.Error(ex, "{AgentId} 发送心跳失败", _agentId);
         }
     }
 

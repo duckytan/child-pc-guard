@@ -93,7 +93,7 @@ public sealed class ContinuousUsageMonitor
             _continuousLimitMinutes = continuousLimitMinutes;
             _restDurationMinutes = restDurationMinutes;
 
-            _logger.LogInformation(
+            _logger.Information(
                 "连续使用监控已更新: 限制={Limit}分钟, 休息={Rest}分钟",
                 continuousLimitMinutes, restDurationMinutes);
         }
@@ -137,7 +137,7 @@ public sealed class ContinuousUsageMonitor
             _isResting = false;
             _restStartTime = DateTime.MinValue;
 
-            _logger.LogDebug("连续使用会话已开始");
+            _logger.Debug("连续使用会话已开始");
         }
     }
 
@@ -152,7 +152,7 @@ public sealed class ContinuousUsageMonitor
             _isResting = false;
             _restStartTime = DateTime.MinValue;
 
-            _logger.LogInformation("连续使用监控已重置");
+            _logger.Information("连续使用监控已重置");
         }
     }
 
@@ -167,7 +167,7 @@ public sealed class ContinuousUsageMonitor
             {
                 _isResting = false;
                 _sessionStartTime = DateTime.UtcNow;  // 重新开始计时
-                _logger.LogInformation("强制休息已手动结束");
+                _logger.Information("强制休息已手动结束");
             }
         }
     }
@@ -192,7 +192,7 @@ public sealed class ContinuousUsageMonitor
             _isResting = true;
             _restStartTime = DateTime.UtcNow;
 
-            _logger.LogWarning(
+            _logger.Warning(
                 "连续使用时长已超限（{Elapsed}分钟），开始强制休息 {RestMinutes}分钟",
                 elapsedMinutes, _restDurationMinutes);
 
@@ -217,7 +217,7 @@ public sealed class ContinuousUsageMonitor
             _sessionStartTime = DateTime.UtcNow;  // 重新开始计时
             _restStartTime = DateTime.MinValue;
 
-            _logger.LogInformation("强制休息已完成，重新开始计时");
+            _logger.Information("强制休息已完成，重新开始计时");
             return false;
         }
 

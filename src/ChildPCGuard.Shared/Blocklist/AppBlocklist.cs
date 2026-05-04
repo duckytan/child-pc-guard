@@ -52,7 +52,7 @@ public sealed class AppBlocklist
         {
             if (_blockedProcessNames.Add(processName))
             {
-                _logger.LogInformation("已添加黑名单进程: {ProcessName}", processName);
+                _logger.Information("已添加黑名单进程: {ProcessName}", processName);
             }
         }
     }
@@ -76,7 +76,7 @@ public sealed class AppBlocklist
         {
             if (_blockedProcessNames.Remove(processName))
             {
-                _logger.LogInformation("已从黑名单移除进程: {ProcessName}", processName);
+                _logger.Information("已从黑名单移除进程: {ProcessName}", processName);
             }
         }
     }
@@ -89,7 +89,7 @@ public sealed class AppBlocklist
         lock (_lock)
         {
             _blockedProcessNames.Clear();
-            _logger.LogInformation("已清空黑名单");
+            _logger.Information("已清空黑名单");
         }
     }
 
@@ -142,17 +142,17 @@ public sealed class AppBlocklist
                     {
                         p.Kill(true);
                         killedCount++;
-                        _logger.LogWarning("已终止黑名单进程: {Name} (PID: {Pid})", blockedName, p.Id);
+                        _logger.Warning("已终止黑名单进程: {Name} (PID: {Pid})", blockedName, p.Id);
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogWarning(ex, "终止进程失败: {Name} (PID: {Pid})", blockedName, p.Id);
+                        _logger.Warning(ex, "终止进程失败: {Name} (PID: {Pid})", blockedName, p.Id);
                     }
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "扫描进程 {Name} 失败", blockedName);
+                _logger.Error(ex, "扫描进程 {Name} 失败", blockedName);
             }
         }
 

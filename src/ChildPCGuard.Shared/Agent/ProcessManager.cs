@@ -34,7 +34,7 @@ public sealed class ProcessManager
     {
         if (!File.Exists(executablePath))
         {
-            _logger.LogError("可执行文件不存在: {Path}", executablePath);
+            _logger.Error("可执行文件不存在: {Path}", executablePath);
             return null;
         }
 
@@ -53,14 +53,14 @@ public sealed class ProcessManager
 
                 if (process != null && !process.HasExited)
                 {
-                    _logger.LogInformation("进程已启动: {Path}, PID: {Pid}",
+                    _logger.Information("进程已启动: {Path}, PID: {Pid}",
                         executablePath, process.Id);
                     return process;
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogWarning(ex, "启动进程失败（尝试 {Attempt}/{MaxRetries}）: {Path}",
+                _logger.Warning(ex, "启动进程失败（尝试 {Attempt}/{MaxRetries}）: {Path}",
                     i + 1, maxRetries, executablePath);
 
                 if (i < maxRetries - 1)
@@ -70,7 +70,7 @@ public sealed class ProcessManager
             }
         }
 
-        _logger.LogError("启动进程失败（已重试 {MaxRetries} 次）: {Path}",
+        _logger.Error("启动进程失败（已重试 {MaxRetries} 次）: {Path}",
             maxRetries, executablePath);
         return null;
     }
@@ -92,11 +92,11 @@ public sealed class ProcessManager
                     p.Kill(true);
                     p.WaitForExit(5000);
                     success = true;
-                    _logger.LogInformation("进程已终止: {Name}, PID: {Pid}", processName, p.Id);
+                    _logger.Information("进程已终止: {Name}, PID: {Pid}", processName, p.Id);
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogWarning(ex, "终止进程失败: {Name}, PID: {Pid}", processName, p.Id);
+                    _logger.Warning(ex, "终止进程失败: {Name}, PID: {Pid}", processName, p.Id);
                 }
             }
 
@@ -104,7 +104,7 @@ public sealed class ProcessManager
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "终止进程异常: {Name}", processName);
+            _logger.Error(ex, "终止进程异常: {Name}", processName);
             return false;
         }
     }
