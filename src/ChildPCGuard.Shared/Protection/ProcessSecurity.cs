@@ -47,35 +47,60 @@ public static class ProcessSecurity
         {
             var currentProcess = GetCurrentProcess();
 
-            // 创建 DACL
-            var dacl = new DiscretionaryAcl(false, false, 16);
+            // 使用 P/Invoke 创建安全描述符
+            var systemSid = new SecurityIdentifier(WellKnownSidType.LocalSystemSid, null);
+            var adminsSid = new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null);
+            var currentUser = WindowsIdentity.GetCurrent().User;
+            var everyoneSid = new SecurityIdentifier(WellKnownSidType.WorldSid, null);
+
+            // 使用 RawSecurityDescriptor 和 RawAcl 构建
+            var rawAcl = new RawAcl(0, 0);
 
             // SYSTEM - FullControl
-            var systemSid = new SecurityIdentifier(WellKnownSidType.LocalSystemSid, null);
-            dacl.AddAccess(systemSid, PROCESS_ALL_ACCESS,
-                          InheritanceFlags.None, PropagationFlags.None);
+            rawAcl.AddAce(new CommonAce(
+                AceFlags.None,
+                AceQualifier.AccessAllowed,
+                PROCESS_ALL_ACCESS,
+                systemSid,
+                false,
+                null));
 
             // Administrators - FullControl
-            var adminsSid = new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null);
-            dacl.AddAccess(adminsSid, PROCESS_ALL_ACCESS,
-                          InheritanceFlags.None, PropagationFlags.None);
+            rawAcl.AddAce(new CommonAce(
+                AceFlags.None,
+                AceQualifier.AccessAllowed,
+                PROCESS_ALL_ACCESS,
+                adminsSid,
+                false,
+                null));
 
             // Current User - FullControl
-            var currentUser = WindowsIdentity.GetCurrent().User;
-            dacl.AddAccess(currentUser, PROCESS_ALL_ACCESS,
-                          InheritanceFlags.None, PropagationFlags.None);
+            rawAcl.AddAce(new CommonAce(
+                AceFlags.None,
+                AceQualifier.AccessAllowed,
+                PROCESS_ALL_ACCESS,
+                currentUser,
+                false,
+                null));
 
             // Everyone/Others - 仅查询和同步（无 PROCESS_TERMINATE）
-            var everyoneSid = new SecurityIdentifier(WellKnownSidType.WorldSid, null);
-            dacl.AddAccess(everyoneSid,
-                          PROCESS_QUERY_INFORMATION | SYNCHRONIZE,
-                          InheritanceFlags.None, PropagationFlags.None);
+            rawAcl.AddAce(new CommonAce(
+                AceFlags.None,
+                AceQualifier.AccessAllowed,
+                PROCESS_QUERY_INFORMATION | SYNCHRONIZE,
+                everyoneSid,
+                false,
+                null));
 
             // 构建安全描述符
-            var securityDescriptor = new CommonSecurityDescriptor(
-                false, false,
+            var securityDescriptor = new RawSecurityDescriptor(
                 ControlFlags.DiscretionaryAclPresent,
-                null, null, null, dacl, null, null);
+                null,
+                null,
+                null,
+                rawAcl,
+                null,
+                null);
 
             // 转换为二进制
             var sdBinary = new byte[securityDescriptor.BinaryLength];
