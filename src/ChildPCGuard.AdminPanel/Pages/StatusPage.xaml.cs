@@ -39,7 +39,7 @@ public partial class StatusPage : Page
                     UsedTimeText.Text = $"{(int)payload.UsedMinutesToday} 分钟";
                     RemainingTimeText.Text = $"{(int)payload.RemainingMinutes} 分钟";
                     ServiceStatusText.Text = payload.IsLocked ? "已锁定" : "运行中";
-                    LastUnlockTimeText.Text = payload.LockReason ?? "无";
+                    LastUnlockTimeText.Text = payload.LockReason.ToString() ?? "无";
                 }
             }
             else
