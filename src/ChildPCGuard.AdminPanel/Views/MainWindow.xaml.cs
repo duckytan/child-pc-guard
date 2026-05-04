@@ -16,32 +16,32 @@ public partial class MainWindow : Window
         NavigateToStatus(null, null);
     }
 
-    private void NavigateToStatus(object? sender, RoutedEventArgs? e)
+    private void NavigateToStatus(object sender, RoutedEventArgs e)
     {
         ContentFrame.Navigate(new Pages.StatusPage());
     }
 
-    private void NavigateToRules(object? sender, RoutedEventArgs? e)
+    private void NavigateToRules(object sender, RoutedEventArgs e)
     {
         ContentFrame.Navigate(new Pages.RulesPage());
     }
 
-    private void NavigateToActions(object? sender, RoutedEventArgs? e)
+    private void NavigateToActions(object sender, RoutedEventArgs e)
     {
         ContentFrame.Navigate(new Pages.ActionsPage());
     }
 
-    private void NavigateToLogs(object? sender, RoutedEventArgs? e)
+    private void NavigateToLogs(object sender, RoutedEventArgs e)
     {
         ContentFrame.Navigate(new Pages.LogsPage());
     }
 
-    private void NavigateToPassword(object? sender, RoutedEventArgs? e)
+    private void NavigateToPassword(object sender, RoutedEventArgs e)
     {
         ContentFrame.Navigate(new Pages.PasswordPage());
     }
 
-    private void NavigateToAbout(object? sender, RoutedEventArgs? e)
+    private void NavigateToAbout(object sender, RoutedEventArgs e)
     {
         ContentFrame.Navigate(new Pages.AboutPage());
     }

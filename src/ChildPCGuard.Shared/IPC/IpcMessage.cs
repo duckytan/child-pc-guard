@@ -1,3 +1,4 @@
+using ChildPCGuard.Shared.State;
 using System.Text.Json.Serialization;
 
 namespace ChildPCGuard.Shared.IPC;
@@ -71,7 +72,7 @@ public class StatusPayload
     public TimeSpan ServiceUptime { get; set; }
 
     [JsonPropertyName("lockReason")]
-    public string? LockReason { get; set; }
+    public LockReason LockReason { get; set; }
 }
 
 /// <summary>ADD_TIME 请求 payload</summary>

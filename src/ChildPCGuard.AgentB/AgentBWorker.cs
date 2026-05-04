@@ -24,7 +24,7 @@ public sealed class AgentBWorker
 
     public AgentBWorker()
     {
-        _logger = Log.ForContext<AgentBWorker>();
+        _logger = Serilog.Log.ForContext<AgentBWorker>();
         _processManager = new ProcessManager(_logger);
     }
 
