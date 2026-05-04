@@ -75,13 +75,16 @@ public static class ProcessSecurity
                 null));
 
             // Current User - FullControl
-            rawAcl.InsertAce(rawAcl.Count, new CommonAce(
-                AceFlags.None,
-                AceQualifier.AccessAllowed,
-                PROCESS_ALL_ACCESS,
-                currentUser,
-                false,
-                null));
+            if (currentUser != null)
+            {
+                rawAcl.InsertAce(rawAcl.Count, new CommonAce(
+                    AceFlags.None,
+                    AceQualifier.AccessAllowed,
+                    PROCESS_ALL_ACCESS,
+                    currentUser,
+                    false,
+                    null));
+            }
 
             // Everyone/Others - 仅查询和同步（无 PROCESS_TERMINATE）
             rawAcl.InsertAce(rawAcl.Count, new CommonAce(

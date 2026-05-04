@@ -46,9 +46,12 @@ public class PipeServer : IDisposable
                     PipeDirection.InOut,
                     NamedPipeServerStream.MaxAllowedServerInstances,
                     PipeTransmissionMode.Byte,
-                    PipeOptions.Asynchronous,
-                    4096, 4096,
-                    pipeSecurity);
+                    PipeOptions.Asynchronous);
+
+                // 设置安全描述符
+                var security = pipe.GetAccessControl();
+                security.SetSecurityDescriptorBinaryForm(pipeSecurity.GetSecurityDescriptorBinaryForm());
+                pipe.SetAccessControl(security);
 
                 await pipe.WaitForConnectionAsync(ct);
                 _ = HandleClientAsync(pipe, ct); // 不等待，继续接受下一个连接
