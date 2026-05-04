@@ -164,8 +164,8 @@ public class GuardWorker : BackgroundService
             if (shouldRest && _continuousMonitor.IsResting)
             {
                 // 触发强制休息锁屏
-                _state.LockReason = "ContinuousLimitReached";
-                await TriggerLockAsync("ContinuousLimitReached");
+                _state.LockReason = LockReason.ContinuousLimitReached;
+                await TriggerLockAsync(LockReason.ContinuousLimitReached);
                 return;
             }
         }
@@ -182,7 +182,7 @@ public class GuardWorker : BackgroundService
 
             if (shouldLock)
             {
-                await TriggerLockAsync(reason.ToString());
+                await TriggerLockAsync(reason);
             }
             else
             {
@@ -211,7 +211,7 @@ public class GuardWorker : BackgroundService
     }
 
     /// <summary>触发锁屏：记录原因，启动 LockOverlay 进程</summary>
-    private async Task TriggerLockAsync(string reason)
+    private async Task TriggerLockAsync(LockReason reason)
     {
         if (_isLocked) return;
 
@@ -240,7 +240,7 @@ public class GuardWorker : BackgroundService
             }
 
             // Phase 3: 传递锁屏原因参数
-            var reasonArg = _state.LockReason ?? "ManualLock";
+            var reasonArg = _state.LockReason.ToString();
             _lockOverlayProcess = System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
             {
                 FileName = lockOverlayPath,
@@ -289,7 +289,7 @@ public class GuardWorker : BackgroundService
         _logger.LogInformation("解除锁屏");
         _isLocked = false;
         _state.IsLocked = false;
-        _state.LockReason = null;
+        _state.LockReason = LockReason.None;
 
         try
         {
@@ -337,7 +337,7 @@ public class GuardWorker : BackgroundService
 
     private async Task<IpcMessage?> HandleLockNowCommand()
     {
-        await TriggerLockAsync("ManualLock");
+        await TriggerLockAsync(LockReason.ManualLock);
         return IpcMessage.Create(IpcCommand.Ack);
     }
 
@@ -352,7 +352,7 @@ public class GuardWorker : BackgroundService
             payload.Minutes, _state.ExtraMinutesToday);
 
         // 追加时间后如果当前是因为时长超限锁屏，立即解锁
-        if (_isLocked && _state.LockReason == nameof(LockReason.DailyLimitReached))
+        if (_isLocked && _state.LockReason == LockReason.DailyLimitReached)
         {
             Unlock();
         }
@@ -416,13 +416,13 @@ public class GuardWorker : BackgroundService
         };
     }
 
-    private static string GetLockMessage(string reason) => reason switch
+    private static string GetLockMessage(LockReason reason) => reason switch
     {
-        nameof(LockReason.DailyLimitReached) => "今天的使用时间已到，好好休息～",
-        nameof(LockReason.OutsideAllowedWindow) => "现在不在允许的使用时段内",
-        nameof(LockReason.TimeTampered) => "检测到系统时间异常",
-        nameof(LockReason.ManualLock) => "屏幕已被家长锁定",
-        nameof(LockReason.ContinuousLimitReached) => "连续使用时间过长，休息一下吧～",
+        LockReason.DailyLimitReached => "今天的使用时间已到，好好休息～",
+        LockReason.OutsideAllowedWindow => "现在不在允许的使用时段内",
+        LockReason.TimeTampered => "检测到系统时间异常",
+        LockReason.ManualLock => "屏幕已被家长锁定",
+        LockReason.ContinuousLimitReached => "连续使用时间过长，休息一下吧～",
         _ => "屏幕已锁定"
     };
 

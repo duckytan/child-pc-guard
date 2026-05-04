@@ -1,19 +1,8 @@
 using ChildPCGuard.Shared.Config;
+using ChildPCGuard.Shared.State;
 using Microsoft.Extensions.Logging;
 
 namespace ChildPCGuard.GuardService.Core;
-
-/// <summary>锁屏触发原因</summary>
-public enum LockReason
-{
-    None,
-    DailyLimitReached,
-    OutsideAllowedWindow,
-    TimeTampered,
-    ManualLock,
-    AutoShutdown,
-    ContinuousLimitReached
-}
 
 /// <summary>
 /// 规则引擎：判断当前是否需要锁屏，并确定原因

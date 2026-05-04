@@ -25,7 +25,7 @@ public class DailyState
 
     /// <summary>锁屏原因</summary>
     [JsonPropertyName("lockReason")]
-    public string? LockReason { get; set; }
+    public LockReason LockReason { get; set; } = LockReason.None;
 
     /// <summary>暂停管控到此时间，null 表示未暂停</summary>
     [JsonPropertyName("pausedUntil")]
@@ -64,7 +64,7 @@ public class DailyState
         Date = DateTime.Today.ToString("yyyy-MM-dd");
         UsedMinutesToday = 0;
         IsLocked = false;
-        LockReason = null;
+        LockReason = LockReason.None;
         PausedUntil = null;
         ExtraMinutesToday = 0;
         ContinuousMinutes = 0;
