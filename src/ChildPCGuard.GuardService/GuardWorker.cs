@@ -338,7 +338,7 @@ public class GuardWorker : BackgroundService
     private async Task<IpcMessage?> HandleLockNowCommand()
     {
         await TriggerLockAsync("ManualLock");
-        return Task.FromResult<IpcMessage?>(IpcMessage.Create(IpcCommand.Ack));
+        return IpcMessage.Create(IpcCommand.Ack);
     }
 
     private Task<IpcMessage?> HandleAddTimeCommand(IpcMessage message)
@@ -352,7 +352,7 @@ public class GuardWorker : BackgroundService
             payload.Minutes, _state.ExtraMinutesToday);
 
         // 追加时间后如果当前是因为时长超限锁屏，立即解锁
-        if (_isLocked && _state.LockReason == "DailyLimitReached")
+        if (_isLocked && _state.LockReason == nameof(Core.LockReason.DailyLimitReached))
         {
             Unlock();
         }
@@ -418,11 +418,11 @@ public class GuardWorker : BackgroundService
 
     private static string GetLockMessage(string reason) => reason switch
     {
-        "DailyLimitReached" => "今天的使用时间已到，好好休息～",
-        "OutsideAllowedWindow" => "现在不在允许的使用时段内",
-        "TimeTampered" => "检测到系统时间异常",
-        "ManualLock" => "屏幕已被家长锁定",
-        "ContinuousLimitReached" => "连续使用时间过长，休息一下吧～",
+        nameof(Core.LockReason.DailyLimitReached) => "今天的使用时间已到，好好休息～",
+        nameof(Core.LockReason.OutsideAllowedWindow) => "现在不在允许的使用时段内",
+        nameof(Core.LockReason.TimeTampered) => "检测到系统时间异常",
+        nameof(Core.LockReason.ManualLock) => "屏幕已被家长锁定",
+        nameof(Core.LockReason.ContinuousLimitReached) => "连续使用时间过长，休息一下吧～",
         _ => "屏幕已锁定"
     };
 
