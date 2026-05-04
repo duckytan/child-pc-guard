@@ -1,0 +1,59 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Restore dependencies
+      run: dotnet restore ChildPCGuard.sln
+
+    - name: Build solution
+      run: dotnet build ChildPCGuard.sln --configuration Release --no-restore
+
+    - name: Run tests
+      run: dotnet test tests/ChildPCGuard.Tests/ChildPCGuard.Tests.csproj --configuration Release --no-build --verbosity normal
+
+    - name: Publish GuardService
+      run: dotnet publish src/GuardService/GuardService.csproj --configuration Release --output artifacts/GuardService --self-contained true --runtime win-x64
+
+    - name: Publish AdminPanel
+      run: dotnet publish src/AdminPanel/AdminPanel.csproj --configuration Release --output artifacts/AdminPanel --self-contained true --runtime win-x64
+
+    - name: Publish AgentA
+      run: dotnet publish src/AgentA/AgentA.csproj --configuration Release --output artifacts/AgentA --self-contained true --runtime win-x64
+
+    - name: Publish AgentB
+      run: dotnet publish src/AgentB/AgentB.csproj --configuration Release --output artifacts/AgentB --self-contained true --runtime win-x64
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: ChildPCGuard-Build-${{ github.sha }}
+        path: artifacts/
+
+    - name: Create Release Package
+      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      run: |
+        Compress-Archive -Path artifacts\* -DestinationPath ChildPCGuard-${{ github.sha }}.zip
+
+    - name: Upload Release Asset
+      if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+      uses: actions/upload-artifact@v4
+      with:
+        name: Release-Package
+        path: ChildPCGuard-${{ github.sha }}.zip

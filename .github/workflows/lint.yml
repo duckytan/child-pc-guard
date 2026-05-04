@@ -1,0 +1,30 @@
+name: Code Quality
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  lint:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.0.x'
+
+    - name: Install format tool
+      run: dotnet tool install -g dotnet-format
+
+    - name: Check code formatting
+      run: dotnet format ChildPCGuard.sln --verify-no-changes --verbosity diagnostic
+
+    - name: Run analyzers
+      run: |
+        dotnet build ChildPCGuard.sln --configuration Release -warnaserror
