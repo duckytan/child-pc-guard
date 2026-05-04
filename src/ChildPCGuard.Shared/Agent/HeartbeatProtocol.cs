@@ -95,7 +95,7 @@ public sealed class HeartbeatProtocol
             // 验证心跳来自对方进程
             if (agentIdValue != partnerId)
             {
-                _logger.LogDebug("{AgentId} 未检测到对方进程心跳", _agentId);
+                _logger.Debug("{AgentId} 未检测到对方进程心跳", _agentId);
                 return false;
             }
 
@@ -106,7 +106,7 @@ public sealed class HeartbeatProtocol
 
             if (!isAlive)
             {
-                _logger.LogWarning(
+                _logger.Warning(
                     "{AgentId} 检测到对方进程心跳超时（上次心跳: {ElapsedMs}ms 前）",
                     _agentId, elapsed);
             }
@@ -115,7 +115,7 @@ public sealed class HeartbeatProtocol
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "{AgentId} 检查对方心跳失败", _agentId);
+            _logger.Error(ex, "{AgentId} 检查对方心跳失败", _agentId);
             return false;
         }
     }
@@ -127,7 +127,7 @@ public sealed class HeartbeatProtocol
     {
         _accessor?.Dispose();
         _mmf?.Dispose();
-        _logger.LogDebug("{AgentId} 心跳协议已释放", _agentId);
+        _logger.Debug("{AgentId} 心跳协议已释放", _agentId);
     }
 
     /// <summary>

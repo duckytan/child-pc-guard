@@ -1,8 +1,6 @@
 using System.Runtime.InteropServices;
-using System.Security;
 using System.Security.AccessControl;
 using System.Security.Principal;
-using ChildPCGuard.Shared.Win32;
 using Microsoft.Win32.SafeHandles;
 
 namespace ChildPCGuard.Shared.Protection;
@@ -16,7 +14,7 @@ public static class ProcessSecurity
     [DllImport("kernel32.dll", SetLastError = true)]
     private static extern bool GetKernelObjectSecurity(
         SafeHandle handle,
-        SecurityInformation information,
+        uint securityInformation,
         byte[] securityDescriptor,
         uint length,
         out uint lengthNeeded);
@@ -24,40 +22,13 @@ public static class ProcessSecurity
     [DllImport("kernel32.dll", SetLastError = true)]
     private static extern bool SetKernelObjectSecurity(
         SafeHandle handle,
-        SecurityInformation information,
+        uint securityInformation,
         byte[] securityDescriptor);
-
-    [DllImport("kernel32.dll", SetLastError = true)]
-    private static extern SafeProcessHandle OpenProcess(
-        uint processAccess,
-        bool inheritHandle,
-        int processId);
 
     [DllImport("kernel32.dll", SetLastError = true)]
     private static extern SafeProcessHandle GetCurrentProcess();
 
-    [Flags]
-    private enum SecurityInformation
-    {
-        Owner = 0x1,
-        Group = 0x2,
-        Dacl = 0x4,
-        Label = 0x10,
-        Attribute = 0x20,
-        Scope = 0x40,
-        ProcessTrustLabel = 0x80,
-        Backup = 0x10000
-    }
-
-    private class SafeProcessHandle : SafeHandleZeroOrMinusOneIsInvalid
-    {
-        public SafeProcessHandle(bool ownsHandle) : base(ownsHandle) { }
-
-        protected override bool ReleaseHandle()
-        {
-            return NativeMethods.CloseHandle(handle);
-        }
-    }
+    private const uint DACL_SECURITY_INFORMATION = 0x00000004;
 
     /// <summary>
     /// 保护当前进程，防止被非特权进程终止
@@ -72,7 +43,6 @@ public static class ProcessSecurity
         try
         {
             var currentProcess = GetCurrentProcess();
-            var currentProcessId = System.Diagnostics.Process.GetCurrentProcess().Id;
 
             // 创建 DACL
             var dacl = new DiscretionaryAcl(false, false, 16);
@@ -80,29 +50,28 @@ public static class ProcessSecurity
             // SYSTEM - FullControl
             var systemSid = new SecurityIdentifier(WellKnownSidType.LocalSystemSid, null);
             dacl.AddAccess(AccessControlType.Allow, unchecked((int)0x001F0FFF), // PROCESS_ALL_ACCESS
-                          InheritanceFlags.None, PropagationFlags.None, systemSid);
+                          systemSid, InheritanceFlags.None, PropagationFlags.None);
 
             // Administrators - FullControl
             var adminsSid = new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null);
             dacl.AddAccess(AccessControlType.Allow, unchecked((int)0x001F0FFF),
-                          InheritanceFlags.None, PropagationFlags.None, adminsSid);
+                          adminsSid, InheritanceFlags.None, PropagationFlags.None);
 
             // Current User - FullControl
             var currentUser = WindowsIdentity.GetCurrent().User;
             dacl.AddAccess(AccessControlType.Allow, unchecked((int)0x001F0FFF),
-                          InheritanceFlags.None, PropagationFlags.None, currentUser);
+                          currentUser, InheritanceFlags.None, PropagationFlags.None);
 
             // Everyone/Others - 仅查询和同步（无 PROCESS_TERMINATE）
             // PROCESS_QUERY_INFORMATION = 0x0400, SYNCHRONIZE = 0x001000
             var everyoneSid = new SecurityIdentifier(WellKnownSidType.WorldSid, null);
             dacl.AddAccess(AccessControlType.Allow, 0x00000400 | 0x00100000,
-                          InheritanceFlags.None, PropagationFlags.None, everyoneSid);
+                          everyoneSid, InheritanceFlags.None, PropagationFlags.None);
 
             // 构建安全描述符
             var securityDescriptor = new CommonSecurityDescriptor(
                 false, false,
-                ControlFlags.OwnerDefaulted | ControlFlags.GroupDefaulted | ControlFlags.DaclPresent,
-                null, null, null, dacl, null, null);
+                null, null, null, null, dacl);
 
             // 转换为二进制
             var sdBinary = new byte[securityDescriptor.BinaryLength];
@@ -111,7 +80,7 @@ public static class ProcessSecurity
             // 设置进程安全描述符
             var success = SetKernelObjectSecurity(
                 currentProcess,
-                SecurityInformation.Dacl,
+                DACL_SECURITY_INFORMATION,
                 sdBinary);
 
             if (!success)
@@ -154,7 +123,7 @@ public static class ProcessSecurity
             var currentProcess = GetCurrentProcess();
 
             var sdBinary = new byte[1024];
-            if (!GetKernelObjectSecurity(currentProcess, SecurityInformation.Dacl, sdBinary, (uint)sdBinary.Length, out var needed))
+            if (!GetKernelObjectSecurity(currentProcess, DACL_SECURITY_INFORMATION, sdBinary, (uint)sdBinary.Length, out var needed))
             {
                 var error = Marshal.GetLastWin32Error();
                 throw new System.ComponentModel.Win32Exception(error, "GetKernelObjectSecurity failed");
@@ -169,9 +138,8 @@ public static class ProcessSecurity
             var dacl = sd.DiscretionaryAcl;
             if (dacl != null)
             {
-                foreach (RawAcl acl in dacl)
+                foreach (CommonAce ace in dacl)
                 {
-                    var ace = (CommonAce)acl;
                     if (ace.SecurityIdentifier.Equals(systemSid) &&
                         ace.AceType == AceType.AccessAllowed &&
                         (ace.AccessMask & unchecked((int)0x001F0FFF)) == unchecked((int)0x001F0FFF))
