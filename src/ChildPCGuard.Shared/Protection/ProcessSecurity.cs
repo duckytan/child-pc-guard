@@ -29,6 +29,9 @@ public static class ProcessSecurity
     private static extern SafeProcessHandle GetCurrentProcess();
 
     private const uint DACL_SECURITY_INFORMATION = 0x00000004;
+    private const int PROCESS_ALL_ACCESS = 0x001F0FFF;
+    private const int PROCESS_QUERY_INFORMATION = 0x0400;
+    private const int SYNCHRONIZE = 0x00100000;
 
     /// <summary>
     /// 保护当前进程，防止被非特权进程终止
@@ -49,29 +52,30 @@ public static class ProcessSecurity
 
             // SYSTEM - FullControl
             var systemSid = new SecurityIdentifier(WellKnownSidType.LocalSystemSid, null);
-            dacl.AddAccess(AccessControlType.Allow, unchecked((int)0x001F0FFF), // PROCESS_ALL_ACCESS
-                          systemSid, InheritanceFlags.None, PropagationFlags.None);
+            dacl.AddAccess(AccessControlType.Allow, systemSid,
+                          InheritanceFlags.None, PropagationFlags.None, PROCESS_ALL_ACCESS);
 
             // Administrators - FullControl
             var adminsSid = new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null);
-            dacl.AddAccess(AccessControlType.Allow, unchecked((int)0x001F0FFF),
-                          adminsSid, InheritanceFlags.None, PropagationFlags.None);
+            dacl.AddAccess(AccessControlType.Allow, adminsSid,
+                          InheritanceFlags.None, PropagationFlags.None, PROCESS_ALL_ACCESS);
 
             // Current User - FullControl
             var currentUser = WindowsIdentity.GetCurrent().User;
-            dacl.AddAccess(AccessControlType.Allow, unchecked((int)0x001F0FFF),
-                          currentUser, InheritanceFlags.None, PropagationFlags.None);
+            dacl.AddAccess(AccessControlType.Allow, currentUser,
+                          InheritanceFlags.None, PropagationFlags.None, PROCESS_ALL_ACCESS);
 
             // Everyone/Others - 仅查询和同步（无 PROCESS_TERMINATE）
-            // PROCESS_QUERY_INFORMATION = 0x0400, SYNCHRONIZE = 0x001000
             var everyoneSid = new SecurityIdentifier(WellKnownSidType.WorldSid, null);
-            dacl.AddAccess(AccessControlType.Allow, 0x00000400 | 0x00100000,
-                          everyoneSid, InheritanceFlags.None, PropagationFlags.None);
+            dacl.AddAccess(AccessControlType.Allow, everyoneSid,
+                          InheritanceFlags.None, PropagationFlags.None,
+                          PROCESS_QUERY_INFORMATION | SYNCHRONIZE);
 
             // 构建安全描述符
             var securityDescriptor = new CommonSecurityDescriptor(
                 false, false,
-                null, null, null, null, dacl);
+                ControlFlags.DiscretionaryAclPresent,
+                null, null, null, dacl, null, null);
 
             // 转换为二进制
             var sdBinary = new byte[securityDescriptor.BinaryLength];

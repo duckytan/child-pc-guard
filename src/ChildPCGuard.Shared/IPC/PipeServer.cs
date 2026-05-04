@@ -47,7 +47,6 @@ public class PipeServer : IDisposable
                     NamedPipeServerStream.MaxAllowedServerInstances,
                     PipeTransmissionMode.Byte,
                     PipeOptions.Asynchronous,
-                    4096, 4096,
                     pipeSecurity);
 
                 await pipe.WaitForConnectionAsync(ct);
