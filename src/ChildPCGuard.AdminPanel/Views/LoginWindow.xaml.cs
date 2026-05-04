@@ -18,7 +18,8 @@ public partial class LoginWindow : Window
     {
         InitializeComponent();
         _configManager = new ConfigManager();
-        _passwordValidator = new PasswordValidator(_configManager);
+        var config = _configManager.Load();
+        _passwordValidator = new PasswordValidator(config.AdminPasswordHash);
         _lockTimer = null;
 
         // 检查是否锁定

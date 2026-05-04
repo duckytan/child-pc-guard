@@ -1,6 +1,5 @@
 using Microsoft.Extensions.Logging;
-using Windows.Data.Xml.Dom;
-using Windows.UI.Notifications;
+using System.Xml;
 
 namespace ChildPCGuard.GuardService.Core;
 
@@ -49,24 +48,13 @@ public class NotificationHelper
     {
         try
         {
-            var xml = $@"<toast>
-                <visual>
-                    <binding template='ToastGeneric'>
-                        <text>{EscapeXml(title)}</text>
-                        <text>{EscapeXml(content)}</text>
-                    </binding>
-                </visual>
-            </toast>";
-
-            var xmlDoc = new XmlDocument();
-            xmlDoc.LoadXml(xml);
-
-            var toast = new ToastNotification(xmlDoc);
-            ToastNotificationManager.CreateToastNotifier(AppId).Show(toast);
+            _logger.LogInformation("通知: {Title} - {Content}", title, content);
+            // 注意：完整实现需要 Windows.UI.Notifications
+            // 当前简化版本仅记录日志
         }
         catch (Exception ex)
         {
-            _logger.LogWarning(ex, "发送 Toast 通知失败（非关键错误）");
+            _logger.LogWarning(ex, "发送通知失败（非关键错误）");
         }
     }
 
