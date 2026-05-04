@@ -2,6 +2,7 @@ using System.Windows.Controls;
 using System.Windows.Navigation;
 using System.Windows;
 using ChildPCGuard.Shared.IPC;
+using System.Threading.Tasks;
 
 namespace ChildPCGuard.AdminPanel.Pages;
 
@@ -32,7 +33,7 @@ public partial class StatusPage : Page
 
             if (response?.Command == IpcCommand.StatusResponse)
             {
-                var payload = response.GetPayload<IpcPayloads.StatusPayload>();
+                var payload = response.GetPayload<ChildPCGuard.Shared.IPC.StatusPayload>();
                 if (payload != null)
                 {
                     UsedTimeText.Text = $"{(int)payload.UsedMinutesToday} 分钟";
@@ -50,20 +51,5 @@ public partial class StatusPage : Page
         {
             System.Windows.MessageBox.Show($"刷新状态异常：{ex.Message}", "错误");
         }
-    }
-}
-
-file static class IpcPayloads
-{
-    public class StatusPayload
-    {
-        public double UsedMinutesToday { get; set; }
-        public double RemainingMinutes { get; set; }
-        public double DailyLimitMinutes { get; set; }
-        public bool IsLocked { get; set; }
-        public bool IsPaused { get; set; }
-        public DateTime? PausedUntil { get; set; }
-        public TimeSpan ServiceUptime { get; set; }
-        public string? LockReason { get; set; }
     }
 }

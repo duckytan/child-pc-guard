@@ -158,7 +158,7 @@ public partial class LockWindow : Window
                     ? $"密码错误，还可尝试 {result.RemainingAttempts} 次"
                     : "密码错误";
                 ShowStatus(msg);
-                PasswordInput.Clear();
+                PasswordInput.Password = string.Empty;
                 PasswordInput.Focus();
             }
         }
