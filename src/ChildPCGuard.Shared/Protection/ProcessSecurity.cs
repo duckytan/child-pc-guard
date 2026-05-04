@@ -52,24 +52,24 @@ public static class ProcessSecurity
 
             // SYSTEM - FullControl
             var systemSid = new SecurityIdentifier(WellKnownSidType.LocalSystemSid, null);
-            dacl.AddAccess(AccessControlType.Allow, systemSid,
-                          InheritanceFlags.None, PropagationFlags.None, PROCESS_ALL_ACCESS);
+            dacl.AddAccess(AccessControlType.Allow, PROCESS_ALL_ACCESS,
+                          InheritanceFlags.None, PropagationFlags.None, systemSid);
 
             // Administrators - FullControl
             var adminsSid = new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null);
-            dacl.AddAccess(AccessControlType.Allow, adminsSid,
-                          InheritanceFlags.None, PropagationFlags.None, PROCESS_ALL_ACCESS);
+            dacl.AddAccess(AccessControlType.Allow, PROCESS_ALL_ACCESS,
+                          InheritanceFlags.None, PropagationFlags.None, adminsSid);
 
             // Current User - FullControl
             var currentUser = WindowsIdentity.GetCurrent().User;
-            dacl.AddAccess(AccessControlType.Allow, currentUser,
-                          InheritanceFlags.None, PropagationFlags.None, PROCESS_ALL_ACCESS);
+            dacl.AddAccess(AccessControlType.Allow, PROCESS_ALL_ACCESS,
+                          InheritanceFlags.None, PropagationFlags.None, currentUser);
 
             // Everyone/Others - 仅查询和同步（无 PROCESS_TERMINATE）
             var everyoneSid = new SecurityIdentifier(WellKnownSidType.WorldSid, null);
-            dacl.AddAccess(AccessControlType.Allow, everyoneSid,
-                          InheritanceFlags.None, PropagationFlags.None,
-                          PROCESS_QUERY_INFORMATION | SYNCHRONIZE);
+            dacl.AddAccess(AccessControlType.Allow,
+                          PROCESS_QUERY_INFORMATION | SYNCHRONIZE,
+                          InheritanceFlags.None, PropagationFlags.None, everyoneSid);
 
             // 构建安全描述符
             var securityDescriptor = new CommonSecurityDescriptor(
