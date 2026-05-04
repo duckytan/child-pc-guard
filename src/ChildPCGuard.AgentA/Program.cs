@@ -1,4 +1,3 @@
-using ChildPCGuard.AgentA;
 using ChildPCGuard.Shared.Agent;
 using ChildPCGuard.Shared.Protection;
 using Microsoft.Extensions.Logging;

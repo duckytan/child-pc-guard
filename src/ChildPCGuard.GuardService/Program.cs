@@ -1,4 +1,3 @@
-using ChildPCGuard.GuardService;
 using ChildPCGuard.Shared.Agent;
 using ChildPCGuard.Shared.Config;
 using ChildPCGuard.Shared.IPC;
@@ -8,6 +7,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using System.Diagnostics;
+using System.IO;
+using System.Threading;
 
 namespace ChildPCGuard.GuardService;
 

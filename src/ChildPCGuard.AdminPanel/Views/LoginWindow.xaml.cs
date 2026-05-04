@@ -63,7 +63,7 @@ public partial class LoginWindow : Window
         else
         {
             // 未锁定
-            LoginButton.IsEnabled = false;
+            LoginButton.IsEnabled = true;
             PasswordBox.IsEnabled = true;
             StatusText.Visibility = Visibility.Collapsed;
         }
