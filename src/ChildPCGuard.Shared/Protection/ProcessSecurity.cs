@@ -57,7 +57,7 @@ public static class ProcessSecurity
             var rawAcl = new RawAcl(0, 0);
 
             // SYSTEM - FullControl
-            rawAcl.AddAce(new CommonAce(
+            rawAcl.InsertAce(rawAcl.Count, new CommonAce(
                 AceFlags.None,
                 AceQualifier.AccessAllowed,
                 PROCESS_ALL_ACCESS,
@@ -66,7 +66,7 @@ public static class ProcessSecurity
                 null));
 
             // Administrators - FullControl
-            rawAcl.AddAce(new CommonAce(
+            rawAcl.InsertAce(rawAcl.Count, new CommonAce(
                 AceFlags.None,
                 AceQualifier.AccessAllowed,
                 PROCESS_ALL_ACCESS,
@@ -75,7 +75,7 @@ public static class ProcessSecurity
                 null));
 
             // Current User - FullControl
-            rawAcl.AddAce(new CommonAce(
+            rawAcl.InsertAce(rawAcl.Count, new CommonAce(
                 AceFlags.None,
                 AceQualifier.AccessAllowed,
                 PROCESS_ALL_ACCESS,
@@ -84,7 +84,7 @@ public static class ProcessSecurity
                 null));
 
             // Everyone/Others - 仅查询和同步（无 PROCESS_TERMINATE）
-            rawAcl.AddAce(new CommonAce(
+            rawAcl.InsertAce(rawAcl.Count, new CommonAce(
                 AceFlags.None,
                 AceQualifier.AccessAllowed,
                 PROCESS_QUERY_INFORMATION | SYNCHRONIZE,
@@ -97,9 +97,7 @@ public static class ProcessSecurity
                 ControlFlags.DiscretionaryAclPresent,
                 null,
                 null,
-                null,
                 rawAcl,
-                null,
                 null);
 
             // 转换为二进制
