@@ -52,24 +52,24 @@ public static class ProcessSecurity
 
             // SYSTEM - FullControl
             var systemSid = new SecurityIdentifier(WellKnownSidType.LocalSystemSid, null);
-            dacl.AddAccess(AccessControlType.Allow, PROCESS_ALL_ACCESS,
-                          InheritanceFlags.None, PropagationFlags.None, systemSid);
+            dacl.AddAccess(systemSid, PROCESS_ALL_ACCESS,
+                          InheritanceFlags.None, PropagationFlags.None);
 
             // Administrators - FullControl
             var adminsSid = new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null);
-            dacl.AddAccess(AccessControlType.Allow, PROCESS_ALL_ACCESS,
-                          InheritanceFlags.None, PropagationFlags.None, adminsSid);
+            dacl.AddAccess(adminsSid, PROCESS_ALL_ACCESS,
+                          InheritanceFlags.None, PropagationFlags.None);
 
             // Current User - FullControl
             var currentUser = WindowsIdentity.GetCurrent().User;
-            dacl.AddAccess(AccessControlType.Allow, PROCESS_ALL_ACCESS,
-                          InheritanceFlags.None, PropagationFlags.None, currentUser);
+            dacl.AddAccess(currentUser, PROCESS_ALL_ACCESS,
+                          InheritanceFlags.None, PropagationFlags.None);
 
             // Everyone/Others - 仅查询和同步（无 PROCESS_TERMINATE）
             var everyoneSid = new SecurityIdentifier(WellKnownSidType.WorldSid, null);
-            dacl.AddAccess(AccessControlType.Allow,
+            dacl.AddAccess(everyoneSid,
                           PROCESS_QUERY_INFORMATION | SYNCHRONIZE,
-                          InheritanceFlags.None, PropagationFlags.None, everyoneSid);
+                          InheritanceFlags.None, PropagationFlags.None);
 
             // 构建安全描述符
             var securityDescriptor = new CommonSecurityDescriptor(

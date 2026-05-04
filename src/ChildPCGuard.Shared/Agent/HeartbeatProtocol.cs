@@ -19,6 +19,7 @@ public sealed class HeartbeatProtocol
     /// <summary>
     /// 心跳数据结构（64 字节，固定大小）
     /// </summary>
+#pragma warning disable CS0649
     private struct HeartbeatData
     {
         public long LastHeartbeatTimestamp;  // 8 字节
@@ -33,6 +34,7 @@ public sealed class HeartbeatProtocol
         public long Reserved8;               // 8 字节
         public long Reserved9;               // 8 字节
     }
+#pragma warning restore CS0649
 
     private HeartbeatProtocol(string agentId, ILogger logger)
     {
