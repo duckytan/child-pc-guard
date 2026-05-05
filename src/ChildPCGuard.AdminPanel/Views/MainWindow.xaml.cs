@@ -13,7 +13,7 @@ public partial class MainWindow : Window
     private void MainWindow_Loaded(object sender, RoutedEventArgs e)
     {
         // 默认显示状态页
-        NavigateToStatus(null, null);
+        NavigateToStatus(sender, e);
     }
 
     private void NavigateToStatus(object sender, RoutedEventArgs e)
