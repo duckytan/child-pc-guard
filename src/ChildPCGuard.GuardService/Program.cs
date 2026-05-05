@@ -85,7 +85,7 @@ public static class Program
             agentAPath = Path.GetFullPath(agentAPath);
             agentBPath = Path.GetFullPath(agentBPath);
 
-            var processManager = new ProcessManager(Serilog.Log.ForContext("Program"));
+            var processManager = new ProcessManager(Serilog.Log.ForContext(typeof(Program)));
 
             // 启动 AgentA
             if (File.Exists(agentAPath))

@@ -37,7 +37,7 @@ public sealed class PasswordValidator
         }
 
         // 验证密码
-        if (BCrypt.Verify(password, _passwordHash))
+        if (BCrypt.Net.BCrypt.Verify(password, _passwordHash))
         {
             _failedAttempts = 0;
             _lockedUntil = null;
