@@ -170,6 +170,7 @@ public class HeartbeatProtocolTests : IDisposable
 
         // Act
         agentA.SendHeartbeat();
+        agentB.SendHeartbeat();
         Thread.Sleep(100);
 
         var aDetectsB = agentA.IsPartnerAlive();
