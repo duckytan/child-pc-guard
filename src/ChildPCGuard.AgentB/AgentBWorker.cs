@@ -30,12 +30,12 @@ public sealed class AgentBWorker
 
     public void Run()
     {
-        _logger.LogInformation("=== AgentB 启动 ===");
-        _logger.LogInformation("伪装进程名: {Name}", AgentBName);
+        _logger.Information("=== AgentB 启动 ===");
+        _logger.Information("伪装进程名: {Name}", AgentBName);
 
         // 1. 应用进程 DACL 保护（防任务管理器 Kill）
         bool protectedResult = ProcessSecurity.ProtectCurrentProcess();
-        _logger.LogInformation("进程 DACL 保护: {Result}", protectedResult ? "成功" : "失败");
+        _logger.Information("进程 DACL 保护: {Result}", protectedResult ? "成功" : "失败");
 
         // 2. 初始化心跳协议
         _heartbeat = HeartbeatProtocol.CreateAgentB(_logger);
@@ -78,12 +78,12 @@ public sealed class AgentBWorker
 
         if (!isAlive)
         {
-            _logger.LogWarning("AgentA 心跳超时，尝试重启...");
+            _logger.Warning("AgentA 心跳超时，尝试重启...");
             RestartAgentA();
         }
         else
         {
-            _logger.LogDebug("AgentA 存活");
+            _logger.Debug("AgentA 存活");
         }
     }
 
@@ -98,11 +98,11 @@ public sealed class AgentBWorker
 
         if (_agentAProcess != null)
         {
-            _logger.LogInformation("AgentA 已重启，PID: {Pid}", _agentAProcess.Id);
+            _logger.Information("AgentA 已重启，PID: {Pid}", _agentAProcess.Id);
         }
         else
         {
-            _logger.LogError("AgentA 重启失败，将在下次检查时重试");
+            _logger.Error("AgentA 重启失败，将在下次检查时重试");
         }
     }
 

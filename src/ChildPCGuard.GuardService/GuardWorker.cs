@@ -6,6 +6,7 @@ using ChildPCGuard.Shared.Protection;
 using ChildPCGuard.Shared.State;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace ChildPCGuard.GuardService;
 
@@ -20,6 +21,7 @@ public class GuardWorker : BackgroundService
     private const int NtpCheckIntervalTicks = 60; // 每 60 tick（5 分钟）校验一次 NTP
 
     private readonly ILogger<GuardWorker> _logger;
+    private readonly ILoggerFactory _loggerFactory;
     private readonly ConfigManager _configManager;
     private readonly StateManager _stateManager;
     private readonly PipeServer _pipeServer;
@@ -44,11 +46,13 @@ public class GuardWorker : BackgroundService
 
     public GuardWorker(
         ILogger<GuardWorker> logger,
+        ILoggerFactory loggerFactory,
         ConfigManager configManager,
         StateManager stateManager,
         PipeServer pipeServer)
     {
         _logger = logger;
+        _loggerFactory = loggerFactory;
         _configManager = configManager;
         _stateManager = stateManager;
         _pipeServer = pipeServer;
@@ -66,16 +70,16 @@ public class GuardWorker : BackgroundService
         _state = _stateManager.Load();
 
         // 3. 初始化子模块
-        _timeTracker = new TimeTracker(_logger.CreateLogger<TimeTracker>(),
+        _timeTracker = new TimeTracker(_loggerFactory.CreateLogger<TimeTracker>(),
             _state.UsedMinutesToday, _state.ContinuousMinutes, _config.IdleThresholdMs);
-        _ruleEngine = new RuleEngine(_logger.CreateLogger<RuleEngine>());
-        _shutdownScheduler = new ShutdownScheduler(_logger.CreateLogger<ShutdownScheduler>());
-        _notificationHelper = new NotificationHelper(_logger.CreateLogger<NotificationHelper>());
-        _ntpValidator = new NtpTimeValidator(_config.NtpServers, _logger.CreateLogger<NtpTimeValidator>());
+        _ruleEngine = new RuleEngine(_loggerFactory.CreateLogger<RuleEngine>());
+        _shutdownScheduler = new ShutdownScheduler(_loggerFactory.CreateLogger<ShutdownScheduler>());
+        _notificationHelper = new NotificationHelper(_loggerFactory.CreateLogger<NotificationHelper>());
+        _ntpValidator = new NtpTimeValidator(_config.NtpServers, _loggerFactory.CreateLogger<NtpTimeValidator>());
 
         // Phase 6: 初始化黑名单和连续使用监控
-        _appBlocklist = new AppBlocklist(_logger.CreateLogger<AppBlocklist>());
-        _continuousMonitor = new ContinuousUsageMonitor(_logger.CreateLogger<ContinuousUsageMonitor>());
+        _appBlocklist = new AppBlocklist(_loggerFactory.CreateLogger<AppBlocklist>());
+        _continuousMonitor = new ContinuousUsageMonitor(_loggerFactory.CreateLogger<ContinuousUsageMonitor>());
 
         // 加载黑名单和连续使用配置
         if (_config.BlockedApps?.Count > 0)
