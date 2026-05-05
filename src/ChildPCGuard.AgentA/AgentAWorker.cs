@@ -1,6 +1,6 @@
 using ChildPCGuard.Shared.Agent;
 using ChildPCGuard.Shared.Protection;
-using Microsoft.Extensions.Logging;
+using Serilog;
 using System.Diagnostics;
 
 namespace ChildPCGuard.AgentA;
@@ -24,18 +24,18 @@ public sealed class AgentAWorker
 
     public AgentAWorker()
     {
-        _logger = Serilog.Log.ForContext<AgentAWorker>();
+        _logger = Log.ForContext<AgentAWorker>();
         _processManager = new ProcessManager(_logger);
     }
 
     public void Run()
     {
-        _logger.LogInformation("=== AgentA 启动 ===");
-        _logger.LogInformation("伪装进程名: {Name}", AgentAName);
+        _logger.Information("=== AgentA 启动 ===");
+        _logger.Information("伪装进程名: {Name}", AgentAName);
 
         // 1. 应用进程 DACL 保护（防任务管理器 Kill）
         bool protectedResult = ProcessSecurity.ProtectCurrentProcess();
-        _logger.LogInformation("进程 DACL 保护: {Result}", protectedResult ? "成功" : "失败");
+        _logger.Information("进程 DACL 保护: {Result}", protectedResult ? "成功" : "失败");
 
         // 2. 初始化心跳协议
         _heartbeat = HeartbeatProtocol.CreateAgentA(_logger);
@@ -43,7 +43,7 @@ public sealed class AgentAWorker
         // 3. 确定 AgentB 路径
         var baseDir = AppContext.BaseDirectory;
         _agentBPath = Path.Combine(baseDir, AgentBName);
-        _logger.LogInformation("AgentB 路径: {Path}", _agentBPath);
+        _logger.Information("AgentB 路径: {Path}", _agentBPath);
 
         // 4. 启动心跳定时器（每 10 秒发送心跳）
         _heartbeatTimer = new Timer(
@@ -59,7 +59,7 @@ public sealed class AgentAWorker
             TimeSpan.Zero,
             HeartbeatProtocol.HeartbeatInterval);
 
-        _logger.LogInformation("AgentA 已启动，心跳间隔: {Interval}ms",
+        _logger.Information("AgentA 已启动，心跳间隔: {Interval}ms",
             HeartbeatProtocol.HeartbeatInterval.TotalMilliseconds);
 
         // 6. 主循环（保持进程运行）
@@ -78,12 +78,12 @@ public sealed class AgentAWorker
 
         if (!isAlive)
         {
-            _logger.LogWarning("AgentB 心跳超时，尝试重启...");
+            _logger.Warning("AgentB 心跳超时，尝试重启...");
             RestartAgentB();
         }
         else
         {
-            _logger.LogDebug("AgentB 存活");
+            _logger.Debug("AgentB 存活");
         }
     }
 
@@ -98,11 +98,11 @@ public sealed class AgentAWorker
 
         if (_agentBProcess != null)
         {
-            _logger.LogInformation("AgentB 已重启，PID: {Pid}", _agentBProcess.Id);
+            _logger.Information("AgentB 已重启，PID: {Pid}", _agentBProcess.Id);
         }
         else
         {
-            _logger.LogError("AgentB 重启失败，将在下次检查时重试");
+            _logger.Error("AgentB 重启失败，将在下次检查时重试");
         }
     }
 

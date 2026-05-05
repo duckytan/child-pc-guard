@@ -1,4 +1,4 @@
-using Serilog;
+using Microsoft.Extensions.Logging;
 
 namespace ChildPCGuard.Shared.Blocklist;
 
@@ -7,7 +7,7 @@ namespace ChildPCGuard.Shared.Blocklist;
 /// </summary>
 public sealed class ContinuousUsageMonitor
 {
-    private readonly ILogger _logger;
+    private readonly ILogger<ContinuousUsageMonitor> _logger;
     private readonly object _lock = new();
 
     // 配置
@@ -76,7 +76,7 @@ public sealed class ContinuousUsageMonitor
         }
     }
 
-    public ContinuousUsageMonitor(ILogger logger)
+    public ContinuousUsageMonitor(ILogger<ContinuousUsageMonitor> logger)
     {
         _logger = logger;
     }

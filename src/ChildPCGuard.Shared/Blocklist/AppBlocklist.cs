@@ -1,4 +1,4 @@
-using Serilog;
+using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 
 namespace ChildPCGuard.Shared.Blocklist;
@@ -9,10 +9,10 @@ namespace ChildPCGuard.Shared.Blocklist;
 public sealed class AppBlocklist
 {
     private readonly HashSet<string> _blockedProcessNames = new(StringComparer.OrdinalIgnoreCase);
-    private readonly ILogger _logger;
+    private readonly ILogger<AppBlocklist> _logger;
     private readonly object _lock = new();
 
-    public AppBlocklist(ILogger logger)
+    public AppBlocklist(ILogger<AppBlocklist> logger)
     {
         _logger = logger;
     }
