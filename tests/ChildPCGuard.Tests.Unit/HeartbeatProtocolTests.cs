@@ -35,6 +35,151 @@ public class HeartbeatProtocolTests : IDisposable
         {
             _output.WriteLine($"[{logEvent.Level}] {logEvent.RenderMessage()}");
         }
+
+        public bool IsEnabled(Serilog.Events.LogEventLevel level) => true;
+
+        public Serilog.ILogger ForContext(Serilog.Events.LogEventLevel level) => this;
+
+        public Serilog.ILogger ForContext(string propertyName, object? value, bool destructureObjects = false) => this;
+
+        public Serilog.ILogger ForContext<TSource>() => this;
+
+        public Serilog.ILogger ForContext(System.Type sourceContext) => this;
+
+        public void Debug(string messageTemplate) => Write(new Serilog.Events.LogEvent(
+            DateTimeOffset.UtcNow, Serilog.Events.LogEventLevel.Debug, null,
+            Serilog.Events.MessageTemplate.Parse(messageTemplate)));
+
+        public void Debug<T>(string messageTemplate, T propertyValue) => Write(new Serilog.Events.LogEvent(
+            DateTimeOffset.UtcNow, Serilog.Events.LogEventLevel.Debug, null,
+            Serilog.Events.MessageTemplate.Parse(messageTemplate)));
+
+        public void Debug(string messageTemplate, params object[] propertyValues) => Write(new Serilog.Events.LogEvent(
+            DateTimeOffset.UtcNow, Serilog.Events.LogEventLevel.Debug, null,
+            Serilog.Events.MessageTemplate.Parse(messageTemplate)));
+
+        public void Debug(Exception exception, string messageTemplate) => Write(new Serilog.Events.LogEvent(
+            DateTimeOffset.UtcNow, Serilog.Events.LogEventLevel.Debug, exception,
+            Serilog.Events.MessageTemplate.Parse(messageTemplate)));
+
+        public void Debug(Exception exception, string messageTemplate, params object[] propertyValues) => Write(new Serilog.Events.LogEvent(
+            DateTimeOffset.UtcNow, Serilog.Events.LogEventLevel.Debug, exception,
+            Serilog.Events.MessageTemplate.Parse(messageTemplate)));
+
+        public void Information(string messageTemplate) => Write(new Serilog.Events.LogEvent(
+            DateTimeOffset.UtcNow, Serilog.Events.LogEventLevel.Information, null,
+            Serilog.Events.MessageTemplate.Parse(messageTemplate)));
+
+        public void Information<T>(string messageTemplate, T propertyValue) => Write(new Serilog.Events.LogEvent(
+            DateTimeOffset.UtcNow, Serilog.Events.LogEventLevel.Information, null,
+            Serilog.Events.MessageTemplate.Parse(messageTemplate)));
+
+        public void Information(string messageTemplate, params object[] propertyValues) => Write(new Serilog.Events.LogEvent(
+            DateTimeOffset.UtcNow, Serilog.Events.LogEventLevel.Information, null,
+            Serilog.Events.MessageTemplate.Parse(messageTemplate)));
+
+        public void Information(Exception exception, string messageTemplate) => Write(new Serilog.Events.LogEvent(
+            DateTimeOffset.UtcNow, Serilog.Events.LogEventLevel.Information, exception,
+            Serilog.Events.MessageTemplate.Parse(messageTemplate)));
+
+        public void Information(Exception exception, string messageTemplate, params object[] propertyValues) => Write(new Serilog.Events.LogEvent(
+            DateTimeOffset.UtcNow, Serilog.Events.LogEventLevel.Information, exception,
+            Serilog.Events.MessageTemplate.Parse(messageTemplate)));
+
+        public void Warning(string messageTemplate) => Write(new Serilog.Events.LogEvent(
+            DateTimeOffset.UtcNow, Serilog.Events.LogEventLevel.Warning, null,
+            Serilog.Events.MessageTemplate.Parse(messageTemplate)));
+
+        public void Warning<T>(string messageTemplate, T propertyValue) => Write(new Serilog.Events.LogEvent(
+            DateTimeOffset.UtcNow, Serilog.Events.LogEventLevel.Warning, null,
+            Serilog.Events.MessageTemplate.Parse(messageTemplate)));
+
+        public void Warning(string messageTemplate, params object[] propertyValues) => Write(new Serilog.Events.LogEvent(
+            DateTimeOffset.UtcNow, Serilog.Events.LogEventLevel.Warning, null,
+            Serilog.Events.MessageTemplate.Parse(messageTemplate)));
+
+        public void Warning(Exception exception, string messageTemplate) => Write(new Serilog.Events.LogEvent(
+            DateTimeOffset.UtcNow, Serilog.Events.LogEventLevel.Warning, exception,
+            Serilog.Events.MessageTemplate.Parse(messageTemplate)));
+
+        public void Warning(Exception exception, string messageTemplate, params object[] propertyValues) => Write(new Serilog.Events.LogEvent(
+            DateTimeOffset.UtcNow, Serilog.Events.LogEventLevel.Warning, exception,
+            Serilog.Events.MessageTemplate.Parse(messageTemplate)));
+
+        public void Error(string messageTemplate) => Write(new Serilog.Events.LogEvent(
+            DateTimeOffset.UtcNow, Serilog.Events.LogEventLevel.Error, null,
+            Serilog.Events.MessageTemplate.Parse(messageTemplate)));
+
+        public void Error<T>(string messageTemplate, T propertyValue) => Write(new Serilog.Events.LogEvent(
+            DateTimeOffset.UtcNow, Serilog.Events.LogEventLevel.Error, null,
+            Serilog.Events.MessageTemplate.Parse(messageTemplate)));
+
+        public void Error(string messageTemplate, params object[] propertyValues) => Write(new Serilog.Events.LogEvent(
+            DateTimeOffset.UtcNow, Serilog.Events.LogEventLevel.Error, null,
+            Serilog.Events.MessageTemplate.Parse(messageTemplate)));
+
+        public void Error(Exception exception, string messageTemplate) => Write(new Serilog.Events.LogEvent(
+            DateTimeOffset.UtcNow, Serilog.Events.LogEventLevel.Error, exception,
+            Serilog.Events.MessageTemplate.Parse(messageTemplate)));
+
+        public void Error(Exception exception, string messageTemplate, params object[] propertyValues) => Write(new Serilog.Events.LogEvent(
+            DateTimeOffset.UtcNow, Serilog.Events.LogEventLevel.Error, exception,
+            Serilog.Events.MessageTemplate.Parse(messageTemplate)));
+
+        public void Fatal(string messageTemplate) => Write(new Serilog.Events.LogEvent(
+            DateTimeOffset.UtcNow, Serilog.Events.LogEventLevel.Fatal, null,
+            Serilog.Events.MessageTemplate.Parse(messageTemplate)));
+
+        public void Fatal<T>(string messageTemplate, T propertyValue) => Write(new Serilog.Events.LogEvent(
+            DateTimeOffset.UtcNow, Serilog.Events.LogEventLevel.Fatal, null,
+            Serilog.Events.MessageTemplate.Parse(messageTemplate)));
+
+        public void Fatal(string messageTemplate, params object[] propertyValues) => Write(new Serilog.Events.LogEvent(
+            DateTimeOffset.UtcNow, Serilog.Events.LogEventLevel.Fatal, null,
+            Serilog.Events.MessageTemplate.Parse(messageTemplate)));
+
+        public void Fatal(Exception exception, string messageTemplate) => Write(new Serilog.Events.LogEvent(
+            DateTimeOffset.UtcNow, Serilog.Events.LogEventLevel.Fatal, exception,
+            Serilog.Events.MessageTemplate.Parse(messageTemplate)));
+
+        public void Fatal(Exception exception, string messageTemplate, params object[] propertyValues) => Write(new Serilog.Events.LogEvent(
+            DateTimeOffset.UtcNow, Serilog.Events.LogEventLevel.Fatal, exception,
+            Serilog.Events.MessageTemplate.Parse(messageTemplate)));
+
+        public void Verbose(string messageTemplate) => Write(new Serilog.Events.LogEvent(
+            DateTimeOffset.UtcNow, Serilog.Events.LogEventLevel.Verbose, null,
+            Serilog.Events.MessageTemplate.Parse(messageTemplate)));
+
+        public void Verbose<T>(string messageTemplate, T propertyValue) => Write(new Serilog.Events.LogEvent(
+            DateTimeOffset.UtcNow, Serilog.Events.LogEventLevel.Verbose, null,
+            Serilog.Events.MessageTemplate.Parse(messageTemplate)));
+
+        public void Verbose(string messageTemplate, params object[] propertyValues) => Write(new Serilog.Events.LogEvent(
+            DateTimeOffset.UtcNow, Serilog.Events.LogEventLevel.Verbose, null,
+            Serilog.Events.MessageTemplate.Parse(messageTemplate)));
+
+        public void Verbose(Exception exception, string messageTemplate) => Write(new Serilog.Events.LogEvent(
+            DateTimeOffset.UtcNow, Serilog.Events.LogEventLevel.Verbose, exception,
+            Serilog.Events.MessageTemplate.Parse(messageTemplate)));
+
+        public void Verbose(Exception exception, string messageTemplate, params object[] propertyValues) => Write(new Serilog.Events.LogEvent(
+            DateTimeOffset.UtcNow, Serilog.Events.LogEventLevel.Verbose, exception,
+            Serilog.Events.MessageTemplate.Parse(messageTemplate)));
+
+        public void Write(Serilog.Events.LogEventLevel level, string messageTemplate) => Write(new Serilog.Events.LogEvent(
+            DateTimeOffset.UtcNow, level, null, Serilog.Events.MessageTemplate.Parse(messageTemplate)));
+
+        public void Write<T>(Serilog.Events.LogEventLevel level, string messageTemplate, T propertyValue) => Write(new Serilog.Events.LogEvent(
+            DateTimeOffset.UtcNow, level, null, Serilog.Events.MessageTemplate.Parse(messageTemplate)));
+
+        public void Write(Serilog.Events.LogEventLevel level, string messageTemplate, params object[] propertyValues) => Write(new Serilog.Events.LogEvent(
+            DateTimeOffset.UtcNow, level, null, Serilog.Events.MessageTemplate.Parse(messageTemplate)));
+
+        public void Write(Exception exception, Serilog.Events.LogEventLevel level, string messageTemplate) => Write(new Serilog.Events.LogEvent(
+            DateTimeOffset.UtcNow, level, exception, Serilog.Events.MessageTemplate.Parse(messageTemplate)));
+
+        public void Write(Exception exception, Serilog.Events.LogEventLevel level, string messageTemplate, params object[] propertyValues) => Write(new Serilog.Events.LogEvent(
+            DateTimeOffset.UtcNow, level, exception, Serilog.Events.MessageTemplate.Parse(messageTemplate)));
     }
 
     [Fact]
