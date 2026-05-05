@@ -1,5 +1,6 @@
 using ChildPCGuard.GuardService.Core;
 using ChildPCGuard.Shared.Config;
+using ChildPCGuard.Shared.State;
 using FluentAssertions;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;

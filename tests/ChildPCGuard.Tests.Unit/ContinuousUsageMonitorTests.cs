@@ -8,13 +8,13 @@ namespace ChildPCGuard.Tests.Unit;
 public class ContinuousUsageMonitorTests : IDisposable
 {
     private readonly ITestOutputHelper _output;
-    private readonly ILogger _logger;
+    private readonly ILogger<ContinuousUsageMonitor> _logger;
     private readonly ContinuousUsageMonitor _monitor;
 
     public ContinuousUsageMonitorTests(ITestOutputHelper output)
     {
         _output = output;
-        _logger = new TestLogger(output);
+        _logger = new TestLogger<ContinuousUsageMonitor>(output);
         _monitor = new ContinuousUsageMonitor(_logger);
     }
 
@@ -24,7 +24,7 @@ public class ContinuousUsageMonitorTests : IDisposable
         _monitor.EndRest();
     }
 
-    private class TestLogger : ILogger
+    private class TestLogger<T> : ILogger<T>
     {
         private readonly ITestOutputHelper _output;
 

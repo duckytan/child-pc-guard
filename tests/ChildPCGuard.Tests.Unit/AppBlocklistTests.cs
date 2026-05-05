@@ -8,13 +8,13 @@ namespace ChildPCGuard.Tests.Unit;
 public class AppBlocklistTests : IDisposable
 {
     private readonly ITestOutputHelper _output;
-    private readonly ILogger _logger;
+    private readonly ILogger<AppBlocklist> _logger;
     private readonly AppBlocklist _blocklist;
 
     public AppBlocklistTests(ITestOutputHelper output)
     {
         _output = output;
-        _logger = new TestLogger(output);
+        _logger = new TestLogger<AppBlocklist>(output);
         _blocklist = new AppBlocklist(_logger);
     }
 
@@ -23,7 +23,7 @@ public class AppBlocklistTests : IDisposable
         _blocklist.Clear();
     }
 
-    private class TestLogger : ILogger
+    private class TestLogger<T> : ILogger<T>
     {
         private readonly ITestOutputHelper _output;
 
