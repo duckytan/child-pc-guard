@@ -29,16 +29,19 @@ jobs:
       run: dotnet test tests/ChildPCGuard.Tests.Unit/ChildPCGuard.Tests.Unit.csproj --configuration Release --no-build --verbosity normal
 
     - name: Publish GuardService
-      run: dotnet publish src/GuardService/GuardService.csproj --configuration Release --output artifacts/GuardService --self-contained true --runtime win-x64
+      run: dotnet publish src/ChildPCGuard.GuardService/ChildPCGuard.GuardService.csproj --configuration Release --output artifacts/GuardService --self-contained true --runtime win-x64
 
     - name: Publish AdminPanel
-      run: dotnet publish src/AdminPanel/AdminPanel.csproj --configuration Release --output artifacts/AdminPanel --self-contained true --runtime win-x64
+      run: dotnet publish src/ChildPCGuard.AdminPanel/ChildPCGuard.AdminPanel.csproj --configuration Release --output artifacts/AdminPanel --self-contained true --runtime win-x64
+
+    - name: Publish LockOverlay
+      run: dotnet publish src/ChildPCGuard.LockOverlay/ChildPCGuard.LockOverlay.csproj --configuration Release --output artifacts/LockOverlay --self-contained true --runtime win-x64
 
     - name: Publish AgentA
-      run: dotnet publish src/AgentA/AgentA.csproj --configuration Release --output artifacts/AgentA --self-contained true --runtime win-x64
+      run: dotnet publish src/ChildPCGuard.AgentA/ChildPCGuard.AgentA.csproj --configuration Release --output artifacts/AgentA --self-contained true --runtime win-x64
 
     - name: Publish AgentB
-      run: dotnet publish src/AgentB/AgentB.csproj --configuration Release --output artifacts/AgentB --self-contained true --runtime win-x64
+      run: dotnet publish src/ChildPCGuard.AgentB/ChildPCGuard.AgentB.csproj --configuration Release --output artifacts/AgentB --self-contained true --runtime win-x64
 
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
