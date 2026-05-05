@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\ChildPCGuard.Shared\ChildPCGuard.Shared.csproj" />
+    <ProjectReference Include="..\..\src\ChildPCGuard.LockOverlay\ChildPCGuard.LockOverlay.csproj" />
     <ProjectReference Include="..\..\src\ChildPCGuard.GuardService\ChildPCGuard.GuardService.csproj" />
   </ItemGroup>
 

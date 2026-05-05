@@ -1,3 +1,4 @@
+using Xunit;
 using ChildPCGuard.Shared.Agent;
 using Microsoft.Extensions.Logging;
 using Xunit.Abstractions;

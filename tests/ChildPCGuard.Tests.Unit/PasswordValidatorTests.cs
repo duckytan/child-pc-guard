@@ -1,5 +1,5 @@
 using Xunit;
-using ChildPCGuard.LockOverlay;
+using ChildPCGuard.Shared.Auth;
 using BCrypt.Net;
 
 namespace ChildPCGuard.Tests.Unit;
