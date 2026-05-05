@@ -14,7 +14,7 @@ public class PasswordValidatorTests
 
     public PasswordValidatorTests()
     {
-        _passwordHash = BCrypt.HashPassword(TestPassword);
+        _passwordHash = BCrypt.Net.BCrypt.HashPassword(TestPassword);
     }
 
     [Fact]

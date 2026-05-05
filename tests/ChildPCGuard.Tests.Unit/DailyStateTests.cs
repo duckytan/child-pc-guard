@@ -32,7 +32,7 @@ public class DailyStateTests
             Date = "2026-01-01",
             UsedMinutesToday = 100,
             IsLocked = true,
-            LockReason = "DailyLimitReached",
+            LockReason = LockReason.DailyLimitReached,
             ExtraMinutesToday = 30,
             ContinuousMinutes = 45,
             WarningSentMinutes = [10, 5],
@@ -44,7 +44,7 @@ public class DailyStateTests
         state.Date.Should().Be(DateTime.Today.ToString("yyyy-MM-dd"));
         state.UsedMinutesToday.Should().Be(0);
         state.IsLocked.Should().BeFalse();
-        state.LockReason.Should().BeNull();
+        state.LockReason.Should().Be(LockReason.None);
         state.ExtraMinutesToday.Should().Be(0);
         state.ContinuousMinutes.Should().Be(0);
         state.WarningSentMinutes.Should().BeEmpty();
