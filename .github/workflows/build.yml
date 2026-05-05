@@ -26,7 +26,7 @@ jobs:
       run: dotnet build ChildPCGuard.sln --configuration Release --no-restore
 
     - name: Run tests
-      run: dotnet test tests/ChildPCGuard.Tests/ChildPCGuard.Tests.csproj --configuration Release --no-build --verbosity normal
+      run: dotnet test tests/ChildPCGuard.Tests.Unit/ChildPCGuard.Tests.Unit.csproj --configuration Release --no-build --verbosity normal
 
     - name: Publish GuardService
       run: dotnet publish src/GuardService/GuardService.csproj --configuration Release --output artifacts/GuardService --self-contained true --runtime win-x64
