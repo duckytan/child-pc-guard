@@ -11,13 +11,19 @@ public sealed class HeartbeatProtocol
     private const int HeartbeatIntervalMs = 10000;  // 10 秒心跳
     private const int HeartbeatTimeoutMs = 30000;   // 30 秒超时（3 次心跳）
 
+    private const int AgentAOffset = 0;   // AgentA 数据从偏移量 0 开始
+    private const int AgentBOffset = 32;  // AgentB 数据从偏移量 32 开始
+    private const int SharedMemorySize = 64;  // 两个 Agent 的数据空间（每个 32 字节）
+
     private readonly string _agentId;
     private readonly ILogger _logger;
+    private readonly int _selfOffset;   // 当前 Agent 的数据偏移量
+    private readonly int _partnerOffset; // 对方 Agent 的数据偏移量
     private readonly System.IO.MemoryMappedFiles.MemoryMappedFile? _mmf;
     private readonly System.IO.MemoryMappedFiles.MemoryMappedViewAccessor? _accessor;
 
     /// <summary>
-    /// 心跳数据结构（64 字节，固定大小）
+    /// 心跳数据结构（32 字节，每个 Agent 一份）
     /// </summary>
 #pragma warning disable CS0649
     private struct HeartbeatData
@@ -28,11 +34,6 @@ public sealed class HeartbeatProtocol
         public int Reserved2;                // 4 字节
         public int Reserved3;                // 4 字节
         public long Reserved4;               // 8 字节
-        public long Reserved5;               // 8 字节
-        public long Reserved6;               // 8 字节
-        public long Reserved7;               // 8 字节
-        public long Reserved8;               // 8 字节
-        public long Reserved9;               // 8 字节
     }
 #pragma warning restore CS0649
 
@@ -40,11 +41,24 @@ public sealed class HeartbeatProtocol
     {
         _agentId = agentId;
         _logger = logger;
+
+        // 根据角色分配不同的偏移量
+        if (agentId == "AgentA")
+        {
+            _selfOffset = AgentAOffset;
+            _partnerOffset = AgentBOffset;
+        }
+        else
+        {
+            _selfOffset = AgentBOffset;
+            _partnerOffset = AgentAOffset;
+        }
+
         _mmf = System.IO.MemoryMappedFiles.MemoryMappedFile.CreateOrOpen(
             SharedMemoryName,
-            64,
+            SharedMemorySize,
             System.IO.MemoryMappedFiles.MemoryMappedFileAccess.ReadWrite);
-        _accessor = _mmf.CreateViewAccessor(0, 64, System.IO.MemoryMappedFiles.MemoryMappedFileAccess.ReadWrite);
+        _accessor = _mmf.CreateViewAccessor(0, SharedMemorySize, System.IO.MemoryMappedFiles.MemoryMappedFileAccess.ReadWrite);
     }
 
     /// <summary>
@@ -69,8 +83,9 @@ public sealed class HeartbeatProtocol
             var timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
             var agentIdValue = _agentId == "AgentA" ? 1 : 2;
 
-            _accessor.Write(0, timestamp);
-            _accessor.Write(8, agentIdValue);
+            // 写入到自己的偏移量位置
+            _accessor.Write(_selfOffset, timestamp);
+            _accessor.Write(_selfOffset + 8, agentIdValue);
 
             _logger.Debug("{AgentId} 心跳已发送", _agentId);
         }
@@ -91,8 +106,10 @@ public sealed class HeartbeatProtocol
         try
         {
             var partnerId = _agentId == "AgentA" ? 2 : 1;
-            var timestamp = _accessor.ReadInt64(0);
-            var agentIdValue = _accessor.ReadInt32(8);
+
+            // 从对方的偏移量位置读取
+            var timestamp = _accessor.ReadInt64(_partnerOffset);
+            var agentIdValue = _accessor.ReadInt32(_partnerOffset + 8);
 
             // 验证心跳来自对方进程
             if (agentIdValue != partnerId)
