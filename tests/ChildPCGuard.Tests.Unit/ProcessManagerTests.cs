@@ -1,6 +1,7 @@
 using Xunit;
 using ChildPCGuard.Shared.Agent;
 using Serilog;
+using Serilog.Parsing;
 using Xunit.Abstractions;
 using System.Diagnostics;
 
@@ -39,7 +40,7 @@ public class ProcessManagerTests : IDisposable
     private class TestLogger : Serilog.ILogger
     {
         private readonly ITestOutputHelper _output;
-        private readonly Serilog.Events.MessageTemplateParser _parser = new();
+        private readonly Serilog.Parsing.MessageTemplateParser _parser = new();
 
         public TestLogger(ITestOutputHelper output) => _output = output;
 
@@ -73,71 +74,71 @@ public class ProcessManagerTests : IDisposable
 
         public void Debug<T>(string messageTemplate, T propertyValue) => Write(CreateLogEvent(Serilog.Events.LogEventLevel.Debug, null, messageTemplate));
 
-        public void Debug(string messageTemplate, params object[] propertyValues) => Write(CreateLogEvent(Serilog.Events.LogEventLevel.Debug, null, messageTemplate));
+        public void Debug(string messageTemplate, params object?[]? propertyValues) => Write(CreateLogEvent(Serilog.Events.LogEventLevel.Debug, null, messageTemplate));
 
         public void Debug(Exception? exception, string messageTemplate) => Write(CreateLogEvent(Serilog.Events.LogEventLevel.Debug, exception, messageTemplate));
 
-        public void Debug(Exception? exception, string messageTemplate, params object[] propertyValues) => Write(CreateLogEvent(Serilog.Events.LogEventLevel.Debug, exception, messageTemplate));
+        public void Debug(Exception? exception, string messageTemplate, params object?[]? propertyValues) => Write(CreateLogEvent(Serilog.Events.LogEventLevel.Debug, exception, messageTemplate));
 
         public void Information(string messageTemplate) => Write(CreateLogEvent(Serilog.Events.LogEventLevel.Information, null, messageTemplate));
 
         public void Information<T>(string messageTemplate, T propertyValue) => Write(CreateLogEvent(Serilog.Events.LogEventLevel.Information, null, messageTemplate));
 
-        public void Information(string messageTemplate, params object[] propertyValues) => Write(CreateLogEvent(Serilog.Events.LogEventLevel.Information, null, messageTemplate));
+        public void Information(string messageTemplate, params object?[]? propertyValues) => Write(CreateLogEvent(Serilog.Events.LogEventLevel.Information, null, messageTemplate));
 
         public void Information(Exception? exception, string messageTemplate) => Write(CreateLogEvent(Serilog.Events.LogEventLevel.Information, exception, messageTemplate));
 
-        public void Information(Exception? exception, string messageTemplate, params object[] propertyValues) => Write(CreateLogEvent(Serilog.Events.LogEventLevel.Information, exception, messageTemplate));
+        public void Information(Exception? exception, string messageTemplate, params object?[]? propertyValues) => Write(CreateLogEvent(Serilog.Events.LogEventLevel.Information, exception, messageTemplate));
 
         public void Warning(string messageTemplate) => Write(CreateLogEvent(Serilog.Events.LogEventLevel.Warning, null, messageTemplate));
 
         public void Warning<T>(string messageTemplate, T propertyValue) => Write(CreateLogEvent(Serilog.Events.LogEventLevel.Warning, null, messageTemplate));
 
-        public void Warning(string messageTemplate, params object[] propertyValues) => Write(CreateLogEvent(Serilog.Events.LogEventLevel.Warning, null, messageTemplate));
+        public void Warning(string messageTemplate, params object?[]? propertyValues) => Write(CreateLogEvent(Serilog.Events.LogEventLevel.Warning, null, messageTemplate));
 
         public void Warning(Exception? exception, string messageTemplate) => Write(CreateLogEvent(Serilog.Events.LogEventLevel.Warning, exception, messageTemplate));
 
-        public void Warning(Exception? exception, string messageTemplate, params object[] propertyValues) => Write(CreateLogEvent(Serilog.Events.LogEventLevel.Warning, exception, messageTemplate));
+        public void Warning(Exception? exception, string messageTemplate, params object?[]? propertyValues) => Write(CreateLogEvent(Serilog.Events.LogEventLevel.Warning, exception, messageTemplate));
 
         public void Error(string messageTemplate) => Write(CreateLogEvent(Serilog.Events.LogEventLevel.Error, null, messageTemplate));
 
         public void Error<T>(string messageTemplate, T propertyValue) => Write(CreateLogEvent(Serilog.Events.LogEventLevel.Error, null, messageTemplate));
 
-        public void Error(string messageTemplate, params object[] propertyValues) => Write(CreateLogEvent(Serilog.Events.LogEventLevel.Error, null, messageTemplate));
+        public void Error(string messageTemplate, params object?[]? propertyValues) => Write(CreateLogEvent(Serilog.Events.LogEventLevel.Error, null, messageTemplate));
 
         public void Error(Exception? exception, string messageTemplate) => Write(CreateLogEvent(Serilog.Events.LogEventLevel.Error, exception, messageTemplate));
 
-        public void Error(Exception? exception, string messageTemplate, params object[] propertyValues) => Write(CreateLogEvent(Serilog.Events.LogEventLevel.Error, exception, messageTemplate));
+        public void Error(Exception? exception, string messageTemplate, params object?[]? propertyValues) => Write(CreateLogEvent(Serilog.Events.LogEventLevel.Error, exception, messageTemplate));
 
         public void Fatal(string messageTemplate) => Write(CreateLogEvent(Serilog.Events.LogEventLevel.Fatal, null, messageTemplate));
 
         public void Fatal<T>(string messageTemplate, T propertyValue) => Write(CreateLogEvent(Serilog.Events.LogEventLevel.Fatal, null, messageTemplate));
 
-        public void Fatal(string messageTemplate, params object[] propertyValues) => Write(CreateLogEvent(Serilog.Events.LogEventLevel.Fatal, null, messageTemplate));
+        public void Fatal(string messageTemplate, params object?[]? propertyValues) => Write(CreateLogEvent(Serilog.Events.LogEventLevel.Fatal, null, messageTemplate));
 
         public void Fatal(Exception? exception, string messageTemplate) => Write(CreateLogEvent(Serilog.Events.LogEventLevel.Fatal, exception, messageTemplate));
 
-        public void Fatal(Exception? exception, string messageTemplate, params object[] propertyValues) => Write(CreateLogEvent(Serilog.Events.LogEventLevel.Fatal, exception, messageTemplate));
+        public void Fatal(Exception? exception, string messageTemplate, params object?[]? propertyValues) => Write(CreateLogEvent(Serilog.Events.LogEventLevel.Fatal, exception, messageTemplate));
 
         public void Verbose(string messageTemplate) => Write(CreateLogEvent(Serilog.Events.LogEventLevel.Verbose, null, messageTemplate));
 
         public void Verbose<T>(string messageTemplate, T propertyValue) => Write(CreateLogEvent(Serilog.Events.LogEventLevel.Verbose, null, messageTemplate));
 
-        public void Verbose(string messageTemplate, params object[] propertyValues) => Write(CreateLogEvent(Serilog.Events.LogEventLevel.Verbose, null, messageTemplate));
+        public void Verbose(string messageTemplate, params object?[]? propertyValues) => Write(CreateLogEvent(Serilog.Events.LogEventLevel.Verbose, null, messageTemplate));
 
         public void Verbose(Exception? exception, string messageTemplate) => Write(CreateLogEvent(Serilog.Events.LogEventLevel.Verbose, exception, messageTemplate));
 
-        public void Verbose(Exception? exception, string messageTemplate, params object[] propertyValues) => Write(CreateLogEvent(Serilog.Events.LogEventLevel.Verbose, exception, messageTemplate));
+        public void Verbose(Exception? exception, string messageTemplate, params object?[]? propertyValues) => Write(CreateLogEvent(Serilog.Events.LogEventLevel.Verbose, exception, messageTemplate));
 
         public void Write(Serilog.Events.LogEventLevel level, string messageTemplate) => Write(CreateLogEvent(level, null, messageTemplate));
 
         public void Write<T>(Serilog.Events.LogEventLevel level, string messageTemplate, T propertyValue) => Write(CreateLogEvent(level, null, messageTemplate));
 
-        public void Write(Serilog.Events.LogEventLevel level, string messageTemplate, params object[] propertyValues) => Write(CreateLogEvent(level, null, messageTemplate));
+        public void Write(Serilog.Events.LogEventLevel level, string messageTemplate, params object?[]? propertyValues) => Write(CreateLogEvent(level, null, messageTemplate));
 
         public void Write(Exception? exception, Serilog.Events.LogEventLevel level, string messageTemplate) => Write(CreateLogEvent(level, exception, messageTemplate));
 
-        public void Write(Exception? exception, Serilog.Events.LogEventLevel level, string messageTemplate, params object[] propertyValues) => Write(CreateLogEvent(level, exception, messageTemplate));
+        public void Write(Exception? exception, Serilog.Events.LogEventLevel level, string messageTemplate, params object?[]? propertyValues) => Write(CreateLogEvent(level, exception, messageTemplate));
     }
 
     [Fact]
