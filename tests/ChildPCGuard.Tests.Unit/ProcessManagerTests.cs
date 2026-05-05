@@ -42,7 +42,7 @@ public class ProcessManagerTests : IDisposable
 
         public TestLogger(ITestOutputHelper output) => _output = output;
 
-        public void Write(LogEvent logEvent)
+        public void Write(Serilog.Events.LogEvent logEvent)
         {
             _output.WriteLine($"[{logEvent.Level}] {logEvent.RenderMessage()}");
         }
