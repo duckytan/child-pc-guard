@@ -389,7 +389,7 @@ public class GuardWorker : BackgroundService
         _configManager.Save(_config);
 
         // 重建依赖配置的子模块
-        _ntpValidator = new NtpTimeValidator(_config.NtpServers, _logger.CreateLogger<NtpTimeValidator>());
+        _ntpValidator = new NtpTimeValidator(_config.NtpServers, _loggerFactory.CreateLogger<NtpTimeValidator>());
         _state.WarningSentMinutes.Clear(); // 清除已发送预警记录（规则变了，重新计算）
 
         _logger.LogInformation("配置已热更新");
