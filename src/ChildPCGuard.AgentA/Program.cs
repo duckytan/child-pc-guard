@@ -1,6 +1,5 @@
 using ChildPCGuard.Shared.Agent;
 using ChildPCGuard.Shared.Protection;
-using Microsoft.Extensions.Logging;
 using Serilog;
 
 namespace ChildPCGuard.AgentA;
