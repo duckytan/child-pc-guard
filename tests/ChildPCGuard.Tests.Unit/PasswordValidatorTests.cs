@@ -70,7 +70,7 @@ public class PasswordValidatorTests
     }
 
     [Fact]
-    public async Task Validate_LockedDuringCooldown_ReturnsLocked()
+    public void Validate_LockedDuringCooldown_ReturnsLocked()
     {
         var validator = new PasswordValidator(_passwordHash);
 
@@ -87,7 +87,7 @@ public class PasswordValidatorTests
     }
 
     [Fact]
-    public async Task Validate_AfterCooldownUnlock_AllowsCorrectPassword()
+    public void Validate_AfterCooldownUnlock_AllowsCorrectPassword()
     {
         var validator = new PasswordValidator(_passwordHash);
 
